@@ -736,8 +736,19 @@ export default function App() {
 
       {/* Beautiful Custom Preset Creator Modal */}
       {isPresetModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md transition-all duration-300 animate-in fade-in">
-          <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl w-full max-w-md p-6 shadow-2xl relative overflow-hidden transform scale-100 transition-all duration-300 animate-in zoom-in-95">
+        <div 
+          onClick={() => {
+            setIsPresetModalOpen(false);
+            setNewPresetLabel("");
+            setNewPresetDesc("");
+            setNewPresetEmoji("✨");
+          }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md transition-all duration-300 animate-in fade-in"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl w-full max-w-md p-6 shadow-2xl relative overflow-hidden transform scale-100 transition-all duration-300 animate-in zoom-in-95 cursor-default"
+          >
             {/* Artistic Dreamy Aura Gradients */}
             <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] rounded-full bg-gradient-to-tr from-pink-500/12 via-purple-500/4 to-transparent blur-3xl pointer-events-none" />
             <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] rounded-full bg-gradient-to-br from-indigo-500/12 via-blue-500/4 to-transparent blur-3xl pointer-events-none" />
