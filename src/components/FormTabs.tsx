@@ -217,7 +217,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                     placeholder="예: 네이처글로우"
                     className={`w-full text-sm border rounded-xl px-3 py-2.5 outline-none transition-all font-sans ${
                       !payload.brandInfo.brandName 
-                        ? 'border-red-300 bg-red-50/5 dark:bg-red-500/5 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                        ? 'input-invalid' 
                         : 'border-[var(--border-input)] focus:border-pink-500'
                     }`}
                     id="input_brandName"
@@ -252,7 +252,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                   rows={2}
                   className={`w-full text-sm border rounded-xl px-3 py-2 outline-none transition-all ${
                     !payload.brandInfo.brandDescription 
-                      ? 'border-red-300 bg-red-50/5 dark:bg-red-500/5 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                      ? 'input-invalid' 
                       : 'border-[var(--border-input)] focus:border-pink-500'
                   }`}
                   id="input_brandDescription"
@@ -333,7 +333,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                     placeholder="정확한 상품명"
                     className={`w-full text-sm border rounded-xl px-3 py-2.5 outline-none transition-all ${
                       !payload.productInfo.name 
-                        ? 'border-red-300 bg-red-50/5 dark:bg-red-500/5 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                        ? 'input-invalid' 
                         : 'border-[var(--border-input)] focus:border-pink-500'
                     }`}
                     id="input_prod_name"
@@ -527,7 +527,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                 rows={2}
                 className={`w-full text-sm border rounded-xl px-3 py-2 outline-none transition-all ${
                   !payload.contentStrategy.topic 
-                    ? 'border-red-300 bg-red-50/5 dark:bg-red-500/5 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                    ? 'input-invalid' 
                     : 'border-[var(--border-input)] focus:border-pink-500'
                 }`}
                 id="input_topic"

@@ -125,6 +125,18 @@ select:focus {
   outline: none !important;
 }
 
+/* Invalid/Error state for inputs */
+.input-invalid {
+  border-color: #ef4444 !important; /* Red-500 */
+  background-color: rgba(239, 68, 68, 0.05) !important; /* Translucent Red */
+}
+
+.input-invalid:focus {
+  border-color: #dc2626 !important; /* Red-600 */
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+  outline: none !important;
+}
+
 /* Placeholder colors */
 ::-webkit-input-placeholder {
   color: var(--text-placeholder) !important;
