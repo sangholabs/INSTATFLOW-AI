@@ -120,6 +120,7 @@ export default function App() {
   const [webhookUrl, setWebhookUrl] = useState<string>("https://n8n.cally.co.kr/webhook-test/9876ac2a-24bd-453d-8398-775f16a18c6d");
   const [activeTab, setActiveTab] = useState<string>("brand");
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
+  const [isCreatingEmpty, setIsCreatingEmpty] = useState<boolean>(false);
   
   // Theme state
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>(() => {
@@ -178,6 +179,14 @@ export default function App() {
   const [newPresetEmoji, setNewPresetEmoji] = useState<string>("✨");
 
   const handleAddPreset = () => {
+    setIsCreatingEmpty(false);
+    setNewPresetEmoji("✨");
+    setIsPresetModalOpen(true);
+  };
+
+  const handleAddNewEmptyPreset = () => {
+    setIsCreatingEmpty(true);
+    setNewPresetEmoji("📝");
     setIsPresetModalOpen(true);
   };
 
@@ -187,9 +196,9 @@ export default function App() {
     const newPreset = {
       id: "custom_" + Date.now(),
       label: newPresetLabel.trim(),
-      description: newPresetDesc.trim() || "사용자 맞춤형 기획 설정",
-      emoji: newPresetEmoji.trim() || "✨",
-      payload: { ...payload }
+      description: newPresetDesc.trim() || (isCreatingEmpty ? "새로 작성하는 인스타그램 기획안" : "사용자 맞춤형 기획 설정"),
+      emoji: newPresetEmoji.trim() || (isCreatingEmpty ? "📝" : "✨"),
+      payload: isCreatingEmpty ? { ...INITIAL_PAYLOAD } : { ...payload }
     };
 
     setPresets(prev => {
@@ -198,6 +207,10 @@ export default function App() {
       return updated;
     });
     setActivePresetId(newPreset.id);
+    if (isCreatingEmpty) {
+      setPayload(INITIAL_PAYLOAD);
+      setActiveTab("brand");
+    }
 
     setIsPresetModalOpen(false);
     setNewPresetLabel("");
@@ -647,6 +660,21 @@ export default function App() {
                   </p>
                 </div>
               ))}
+
+              {/* 완전히 비어있는 새 프리셋 만들기 카드 슬롯 */}
+              <div
+                onClick={handleAddNewEmptyPreset}
+                className="bg-transparent hover:bg-pink-500/[0.01] border-2 border-dashed border-slate-400 dark:border-slate-800 hover:border-pink-500/50 p-4 rounded-xl text-center flex flex-col items-center justify-center min-h-[110px] transition-all hover:scale-[1.01] hover:shadow-md hover:shadow-pink-500/5 cursor-pointer group"
+                id="btn_create_empty_preset_card"
+              >
+                <PlusCircle className="w-5 h-5 text-slate-400 group-hover:text-pink-500 group-hover:rotate-90 transition-all duration-300" />
+                <span className="font-semibold text-xs text-slate-500 group-hover:text-pink-500 mt-2 font-display">
+                  ➕ 완전히 새로운 빈 프리셋 추가
+                </span>
+                <p className="text-[9px] text-[var(--text-secondary)] mt-1 leading-relaxed">
+                  처음부터 기획안을 새로 작성하고 싶을 때 생성하세요!
+                </p>
+              </div>
             </div>
           </div>
         </div>
