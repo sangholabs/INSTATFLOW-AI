@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Custom scrollbars for pristine visual experience */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Global Dark Theme Overrides for Bento Grid Vibe */
+body {
+  background-color: #0C0C0E !important;
+  color: #E0E0E0 !important;
+  font-family: "Outfit", "Inter", sans-serif;
+}
+
+#main_container_social {
+  background-color: #0C0C0E !important;
+  color: #E0E0E0 !important;
+}
+
+/* Bento Cards base */
+.bento-card {
+  background-color: #18181B !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 1rem !important;
+  color: #E0E0E0 !important;
+}
+
+/* Override standard bg-white to sleek slate/graphite bento box backgrounds */
+.bg-white {
+  background-color: #18181B !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+  color: #E0E0E0 !important;
+}
+
+.bg-slate-50\/70, .bg-slate-50\/50, .bg-slate-50\/40, .bg-slate-50 {
+  background-color: #131316 !important;
+  border-color: rgba(255, 255, 255, 0.04) !important;
+  color: #E0E0E0 !important;
+}
+
+/* Inputs, Textareas, Select elements inside forms mapping to dark obsidian colors */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+textarea,
+select {
+  background-color: #222226 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #FFFFFF !important;
+  transition: all 0.2s ease-in-out;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+textarea:focus,
+select:focus {
+  border-color: #ec4899 !important; /* Pink-500 */
+  box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.2) !important;
+  outline: none !important;
+}
+
+/* Placeholder color */
+::-webkit-input-placeholder {
+  color: #55555C !important;
+}
+:-moz-placeholder {
+  color: #55555C !important;
+}
+::-moz-placeholder {
+  color: #55555C !important;
+}
+:-ms-input-placeholder {
+  color: #55555C !important;
+}
+
+/* Title text colors */
+.text-slate-900, .text-slate-850, .text-slate-800, .text-slate-700 {
+  color: #F3F4F6 !important;
+}
+
+.text-slate-600, .text-slate-500 {
+  color: #A1A1AA !important;
+}
+
+.text-slate-400 {
+  color: #71717A !important;
+}
+
+/* Borders */
+.border-slate-100, .border-slate-200, .border-indigo-100 {
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Labels styling */
+label {
+  color: #A1A1AA !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.025em;
+}
+
+/* Focus and active styles on text overrides */
+.text-indigo-600 {
+  color: #ec4899 !important; /* Pink theme */
+}
+
+.text-indigo-900 {
+  color: #f472b6 !important;
+}
+
+.text-indigo-100 {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Glowing system status */
+.pulse-glow-green {
+  box-shadow: 0 0 12px rgba(34,197,94,0.4);
+}

@@ -1,0 +1,6 @@
+{
+  "name": "인스타플로우 AI (InstaFlow AI)",
+  "description": "브랜드 정밀 분석과 타깃 맞춤형 세그멘테이션을 기반으로 후킹한 캡션, 캐러셀 카드뉴스 기획안, 검증용 해시태그 조합을 자동 생성 및 라이브 시뮬레이션하는 마케팅 부스터 솔루션",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
