@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { InstagramContentPayload, InstagramResponse } from './types';
 import { INSTAGRAM_PRESETS } from './data/presets';
 import FormTabs from './components/FormTabs';
 import InstagramMockup from './components/InstagramMockup';
 import { 
   Sparkles, RotateCcw, Play, CheckCircle2, AlertTriangle, 
-  Settings, Globe, HelpCircle, ArrowRight, Github
+  Settings, Globe, HelpCircle, ArrowRight, Github,
+  Sun, Moon, Laptop, Trash2, PlusCircle
 } from 'lucide-react';
 
 const INITIAL_PAYLOAD: InstagramContentPayload = {
@@ -119,6 +120,79 @@ export default function App() {
   const [webhookUrl, setWebhookUrl] = useState<string>("https://n8n.cally.co.kr/webhook-test/9876ac2a-24bd-453d-8398-775f16a18c6d");
   const [activeTab, setActiveTab] = useState<string>("brand");
   
+  // Theme state
+  const [theme, setTheme] = useState<'light' | 'dark' | 'system'>(() => {
+    return (localStorage.getItem('theme') as any) || 'system';
+  });
+
+  // Dynamic presets state
+  const [presets, setPresets] = useState<typeof INSTAGRAM_PRESETS>(() => {
+    const saved = localStorage.getItem('instagram_presets');
+    return saved ? JSON.parse(saved) : INSTAGRAM_PRESETS;
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    const applyTheme = () => {
+      let activeTheme: 'light' | 'dark' = 'light';
+      if (theme === 'system') {
+        activeTheme = mediaQuery.matches ? 'dark' : 'light';
+      } else {
+        activeTheme = theme;
+      }
+      root.setAttribute('data-theme', activeTheme);
+      if (activeTheme === 'dark') {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
+    };
+
+    applyTheme();
+    localStorage.setItem('theme', theme);
+
+    if (theme === 'system') {
+      const handleChange = () => applyTheme();
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+  }, [theme]);
+
+  const handleDeletePreset = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm("이 프리셋을 삭제하시겠습니까?")) {
+      setPresets(prev => {
+        const updated = prev.filter(p => p.id !== id);
+        localStorage.setItem('instagram_presets', JSON.stringify(updated));
+        return updated;
+      });
+    }
+  };
+
+  const handleAddPreset = () => {
+    const label = prompt("새 프리셋 이름을 입력해 주세요:");
+    if (!label) return;
+    const description = prompt("프리셋에 대한 간단한 설명을 입력해 주세요:") || "사용자 맞춤형 기획 설정";
+    const emoji = prompt("프리셋에 적용할 이모지를 한 개 입력해 주세요 (예: 💡):") || "✨";
+    
+    const newPreset = {
+      id: "custom_" + Date.now(),
+      label,
+      description,
+      emoji,
+      payload: { ...payload }
+    };
+
+    setPresets(prev => {
+      const updated = [...prev, newPreset];
+      localStorage.setItem('instagram_presets', JSON.stringify(updated));
+      return updated;
+    });
+    alert("현재 입력된 폼 설정값들이 새 프리셋으로 정상 저장되었습니다!");
+  };
+  
   // Generation & display status
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [pulseMessage, setPulseMessage] = useState<string>("콘텐츠 대본을 분석하는 중...");
@@ -168,7 +242,7 @@ export default function App() {
     }
   };
 
-  const handleApplyPreset = (preset: typeof INSTAGRAM_PRESETS[0]) => {
+  const handleApplyPreset = (preset: any) => {
     setPayload(preset.payload);
     // Move to first brand tab to let them see
     setActiveTab("brand");
@@ -342,7 +416,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0C0C0E] pb-20 font-sans text-slate-300" id="main_container_social">
+    <div className="min-h-screen bg-[var(--bg-main)] pb-20 font-sans text-[var(--text-primary)]" id="main_container_social">
       {/* Dynamic 1-click toast indicator */}
       <div 
         id="preset_indicator_toast" 
@@ -353,7 +427,7 @@ export default function App() {
       </div>
 
       {/* Header Container */}
-      <header className="bg-[#0C0C0E]/95 border-b border-white/5 sticky top-0 z-40 backdrop-blur-md">
+      <header className="bg-[var(--bg-header)] border-b border-[var(--border-color)] sticky top-0 z-40 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-gradient-to-tr from-pink-500 via-red-500 to-yellow-500 rounded-lg flex items-center justify-center text-white shadow-lg shadow-pink-500/15">
@@ -362,21 +436,20 @@ export default function App() {
               </svg>
             </div>
             <div>
-              <h1 className="text-sm font-bold tracking-tight text-white uppercase font-display flex items-center gap-1.5">
+              <h1 className="text-sm font-bold tracking-tight text-[var(--text-primary)] uppercase font-display flex items-center gap-1.5">
                 INSTAFLOW AI
-                <span className="text-[9px] bg-pink-500/10 text-pink-500 px-2 py-0.5 rounded border border-pink-500/20 font-mono uppercase tracking-widest font-bold">Vite PRO</span>
               </h1>
-              <p className="text-[11px] text-slate-500 font-medium">인스타플로우 AI | 브랜드 분석 기반 인스타그램 캡션 & 카드뉴스 기획 부스터</p>
+              <p className="text-[11px] text-[var(--text-secondary)] font-medium">브랜드 분석 기반 인스타그램 캡션 & 카드뉴스 기획 자동화 플랫폼</p>
             </div>
           </div>
 
           {/* Webhook Configuration Panel Area & Connection Mode */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center space-x-1 border border-white/5 bg-[#141416] p-1 rounded-xl text-xs">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center space-x-1 border border-[var(--border-color)] bg-[var(--bg-sidebar)] p-1 rounded-xl text-xs">
               <button
                 type="button"
                 onClick={() => setMode('gemini')}
-                className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${mode === 'gemini' ? 'bg-gradient-to-tr from-pink-600 to-orange-500 text-white shadow-lg shadow-pink-500/10' : 'text-slate-400 hover:text-white'}`}
+                className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${mode === 'gemini' ? 'bg-gradient-to-tr from-pink-600 to-orange-500 text-white shadow shadow-pink-500/10' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
                 title="서버의 Gemini AI API로 Instagram 카피와 해시태그를 바로 생성해서 인스타그램 기기로 시뮬레이션 합니다."
               >
                 Direct Gemini AI
@@ -384,15 +457,43 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setMode('n8n')}
-                className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${mode === 'n8n' ? 'bg-gradient-to-tr from-pink-600 to-orange-500 text-white shadow-lg shadow-pink-500/10' : 'text-slate-400 hover:text-white'}`}
+                className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${mode === 'n8n' ? 'bg-gradient-to-tr from-pink-600 to-orange-500 text-white shadow shadow-pink-500/10' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
                 title="설정하신 n8n Webhook Endpoint로 포맷팅된 인풋 JSON 전달을 트리거시킵니다."
               >
                 n8n Webhook
               </button>
             </div>
 
+            {/* Theme switcher */}
+            <div className="flex items-center space-x-0.5 border border-[var(--border-color)] bg-[var(--bg-sidebar)] p-1 rounded-xl text-xs">
+              <button
+                type="button"
+                onClick={() => setTheme('light')}
+                className={`p-1.5 rounded-lg transition-all cursor-pointer ${theme === 'light' ? 'bg-[var(--bg-card)] text-indigo-600 shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+                title="라이트 모드"
+              >
+                <Sun className="w-4.5 h-4.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setTheme('dark')}
+                className={`p-1.5 rounded-lg transition-all cursor-pointer ${theme === 'dark' ? 'bg-[var(--bg-card)] text-pink-500 shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+                title="다크 모드"
+              >
+                <Moon className="w-4.5 h-4.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setTheme('system')}
+                className={`p-1.5 rounded-lg transition-all cursor-pointer ${theme === 'system' ? 'bg-[var(--bg-card)] text-teal-500 shadow-sm' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+                title="시스템 설정 자동 전환"
+              >
+                <Laptop className="w-4.5 h-4.5" />
+              </button>
+            </div>
+
             <div className="hidden sm:flex items-center gap-2">
-              <span className="text-[10px] uppercase tracking-widest text-[#666] font-mono">Status: System Ready</span>
+              <span className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] font-mono">Status: System Ready</span>
               <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse"></div>
             </div>
           </div>
@@ -403,37 +504,58 @@ export default function App() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
         {/* Preset Selection & Guide Hero */}
-        <div className="bg-[#18181B] rounded-2xl p-6 sm:p-8 text-white relative overflow-hidden shadow-xl border border-white/5" id="preset_container_bento">
+        <div className="bg-[var(--bg-card)] rounded-2xl p-6 sm:p-8 text-[var(--text-primary)] relative overflow-hidden shadow-xl border border-[var(--border-color)]" id="preset_container_bento">
           <div className="absolute right-0 bottom-0 top-0 w-1/3 opacity-5 pointer-events-none select-none bg-[radial-gradient(circle_at_bottom_right,_var(--tw-gradient-stops))] from-pink-500 via-orange-500 to-transparent" />
-          <div className="max-w-3xl space-y-4">
-            <span className="bg-pink-500/10 text-pink-400 border border-pink-500/20 text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold font-mono">
-              ⚡ 00 / 원클릭 데모 마크업 로더
-            </span>
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <span className="bg-pink-500/10 text-pink-500 border border-pink-500/20 text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold font-mono w-max">
+                🌟 INSTAFLOW AI PROFESSIONAL PRESETS
+              </span>
+              
+              <button
+                type="button"
+                onClick={handleAddPreset}
+                className="bg-indigo-600 hover:bg-indigo-700 border border-indigo-500 text-white px-3.5 py-1.5 rounded-xl font-semibold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-sm w-max"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span>현재 설정을 새 프리셋으로 저장</span>
+              </button>
+            </div>
+            
             <h2 className="text-xl sm:text-2xl font-bold font-display tracking-tight leading-snug">
               어떤 인스타그램 콘텐츠를 기획하고 계신가요? <br />
               원클릭 프리셋 버튼을 누르시면 준비된 테마별 콘텐츠 설정과 비주얼 에셋 정보가 일괄 적용됩니다.
             </h2>
             
             {/* Real Presets badging */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-              {INSTAGRAM_PRESETS.map((preset) => (
-                <button
-                  type="button"
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+              {presets.map((preset) => (
+                <div
                   key={preset.id}
                   onClick={() => handleApplyPreset(preset)}
-                  className="bg-[#222226]/60 hover:bg-[#222226]/90 border border-white/5 p-3.5 rounded-xl text-left transition-all hover:-translate-y-0.5 cursor-pointer group"
+                  className="bg-[var(--bg-sidebar)] hover:bg-[var(--bg-card)] border border-[var(--border-color)] p-4 rounded-xl text-left transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer group relative"
                   id={`preset_btn_${preset.id}`}
                 >
+                  {preset.id.startsWith('custom_') && (
+                    <button
+                      type="button"
+                      onClick={(e) => handleDeletePreset(preset.id, e)}
+                      className="absolute top-2 right-2 text-[var(--text-muted)] hover:text-red-500 p-1.5 rounded-lg transition-colors cursor-pointer"
+                      title="프리셋 삭제"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                   <div className="flex items-center space-x-2">
                     <span className="text-lg">{preset.emoji}</span>
-                    <span className="font-semibold text-xs text-white group-hover:text-pink-400 transition-colors">
+                    <span className="font-semibold text-xs text-[var(--text-primary)] group-hover:text-pink-500 transition-colors pr-6">
                       {preset.label}
                     </span>
                   </div>
-                  <p className="text-[10px] text-slate-400 mt-1 leading-relaxed line-clamp-1">
+                  <p className="text-[10px] text-[var(--text-secondary)] mt-1.5 leading-relaxed line-clamp-2">
                     {preset.description}
                   </p>
-                </button>
+                </div>
               ))}
             </div>
           </div>
@@ -469,6 +591,7 @@ export default function App() {
             onChange={handleFieldChange} 
             activeTab={activeTab} 
             setActiveTab={setActiveTab} 
+            mode={mode}
           />
 
           {/* Form Action Controls: Reset vs Generate */}
@@ -577,41 +700,6 @@ export default function App() {
             />
           </div>
         )}
-
-        {/* NETLIFY DEPLOYMENT AND DEVELOPMENT GUIDE HERO CARD */}
-        <div className="bg-[#18181B] rounded-2xl border border-white/5 p-6 sm:p-8 shadow-xl space-y-4" id="netlify_guide_card">
-          <div className="flex items-center space-x-2 text-pink-500">
-            <span className="text-lg">⚡</span>
-            <h4 className="text-sm font-extrabold text-white tracking-tight font-display">Netlify 배포 가이드 & 깃허브 업로드 전략 (Core Engine)</h4>
-          </div>
-          <p className="text-xs text-slate-400 leading-relaxed font-sans">
-            해당 웹앱은 최신 번들러 구조를 갖춘 **정적 React SPA(Single Page Application)** 환경으로 설계되었습니다. 추후 Netlify 또는 Vercel을 거쳐 배포하실 때 아래 사항을 준수하시면 몇 초 만에 글로벌 정적 업로드가 완료됩니다.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-            <div className="bg-[#222226]/50 p-4 rounded-xl border border-white/5 space-y-1.5 text-xs">
-              <div className="font-bold text-white font-display flex items-center gap-1.5">
-                <Github className="w-4 h-4 text-slate-300" />
-                1. 깃허브 저장 및 Netlify 설정값
-              </div>
-              <ul className="list-disc list-inside space-y-1 text-slate-400 text-[11px] leading-relaxed pl-1 font-sans">
-                <li>**Build Command (빌드 명령어):** <code className="bg-[#2a2a2f] text-[#E0E0E0] px-1 py-0.5 rounded text-[10px] font-mono border border-white/5">npm run build</code></li>
-                <li>**Publish Directory (배포 디렉토리):** <code className="bg-[#2a2a2f] text-[#E0E0E0] px-1 py-0.5 rounded text-[10px] font-mono border border-white/5">dist</code></li>
-                <li>**환경 변수 설정 (Optional Secrets):** Netlify 설정 - Environment variables 메뉴에서 <code className="bg-[#2a2a2f] text-[#E0E0E0] px-1 py-0.5 rounded text-[10px] font-mono border border-white/5">GEMINI_API_KEY</code>를 등록하시면 Netlify 빌드 후 즉각 연계 작동됩니다.</li>
-              </ul>
-            </div>
-
-            <div className="bg-[#222226]/50 p-4 rounded-xl border border-white/5 space-y-1.5 text-xs">
-              <div className="font-bold text-white font-display flex items-center gap-1.5">
-                <Globe className="w-4 h-4 text-emerald-400" />
-                2. n8n 웹훅 CORS 연계 가이드
-              </div>
-              <p className="text-slate-400 text-[11px] leading-relaxed font-sans">
-                브라우저에서 직접 타 채널 n8n 웹훅을 호출할 때 발생할 수 있는 **CORS 보호 정책**을 완화하기 위해 본 시스템은 `/api/generate` Express 통신 대행 프록시를 구축해 두었습니다. Netlify 배포 후에도 n8n 흐름 내에서 Response Header에 <code className="bg-[#2a2a2f] text-[10px] text-green-300 px-1 rounded font-mono border border-white/5">Access-Control-Allow-Origin: *</code>를 인쇄 처리해 주시면 더욱 신속하게 연계됩니다.
-              </p>
-            </div>
-          </div>
-        </div>
 
       </main>
 

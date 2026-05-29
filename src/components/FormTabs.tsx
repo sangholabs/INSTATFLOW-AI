@@ -14,9 +14,10 @@ interface FormTabsProps {
   onChange: (section: keyof InstagramContentPayload, field: string, value: any) => void;
   activeTab: string;
   setActiveTab: (tabId: string) => void;
+  mode: 'n8n' | 'gemini';
 }
 
-export default function FormTabs({ payload, onChange, activeTab, setActiveTab }: FormTabsProps) {
+export default function FormTabs({ payload, onChange, activeTab, setActiveTab, mode }: FormTabsProps) {
   
   const tabs = [
     { id: 'brand', label: '브랜드 & 제품', icon: Building2, desc: '브랜드 가치관과 전개하려는 에셋 상세' },
@@ -97,10 +98,6 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
         })}
 
         <div className="mt-8 p-3 rounded-xl bg-indigo-50/50 border border-indigo-100 text-[11px] text-indigo-700 space-y-1.5">
-          <div className="font-semibold flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5" />
-            작성 가이드 팁
-          </div>
           <p className="leading-relaxed">
             왼쪽의 인풋들을 채우다 막히실 때는 **상단의 프리셋 버튼**을 이용하여 전문 브랜드 마크업 데이터를 한 번에 대입해볼 수 있습니다.
           </p>
@@ -122,16 +119,26 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
               <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wider font-display">1. 브랜드 프로필</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">브랜드명 <span className="text-red-500">*</span></label>
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                    브랜드명 <span className="text-red-500">*</span>
+                  </label>
                   <input
                     type="text"
                     required
                     value={payload.brandInfo.brandName}
                     onChange={(e) => onChange('brandInfo', 'brandName', e.target.value)}
                     placeholder="예: 네이처글로우"
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-sans"
+                    className={`w-full text-sm border rounded-xl px-3 py-2.5 outline-none transition-all font-sans ${
+                      !payload.brandInfo.brandName 
+                        ? 'border-red-300 bg-red-50/5 dark:bg-red-500/5 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                        : 'border-[var(--border-input)] focus:border-pink-500'
+                    }`}
                     id="input_brandName"
                   />
+                  {!payload.brandInfo.brandName && (
+                    <p className="text-[10px] text-red-550 mt-1 font-sans flex items-center gap-1">⚠️ 필수 입력 항목입니다.</p>
+                  )}
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">인스타그램 캡션 및 카드뉴스에 대표로 표기될 정식 브랜드 사명입니다.</p>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">판매 제품 또는 서비스 핵심명</label>
@@ -140,22 +147,33 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     value={payload.brandInfo.productOrService}
                     onChange={(e) => onChange('brandInfo', 'productOrService', e.target.value)}
                     placeholder="예: 비건 수분 크림"
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 transition-all font-sans"
                     id="input_brand_product"
                   />
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">주력으로 홍보하고자 하는 시그니처 대표 제품이나 핵심 솔루션입니다.</p>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-600 mb-1">브랜드 한 줄 소개 및 특징 <span className="text-red-500">*</span></label>
+                <label className="block text-xs font-medium text-slate-600 mb-1">
+                  브랜드 한 줄 소개 및 특징 <span className="text-red-500">*</span>
+                </label>
                 <textarea
                   value={payload.brandInfo.brandDescription}
                   onChange={(e) => onChange('brandInfo', 'brandDescription', e.target.value)}
                   placeholder="추구하는 주요 환경, 철학, 서비스 내용을 상세히 서술해주세요."
                   rows={2}
-                  className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                  className={`w-full text-sm border rounded-xl px-3 py-2 outline-none transition-all ${
+                    !payload.brandInfo.brandDescription 
+                      ? 'border-red-300 bg-red-50/5 dark:bg-red-500/5 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                      : 'border-[var(--border-input)] focus:border-pink-500'
+                  }`}
                   id="input_brandDescription"
                 />
+                {!payload.brandInfo.brandDescription && (
+                  <p className="text-[10px] text-red-550 mt-1 font-sans flex items-center gap-1">⚠️ 필수 입력 항목입니다.</p>
+                )}
+                <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">브랜드 고유의 철학, 탄생배경 및 핵심 가치를 작성하시면 AI 프롬프트 생성 품질이 극대화됩니다.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -166,9 +184,10 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     value={payload.brandInfo.links}
                     onChange={(e) => onChange('brandInfo', 'links', e.target.value)}
                     placeholder="링크, SNS계정 등"
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 transition-all font-sans"
                     id="input_brand_links"
                   />
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">캡션의 CTA(행동유도) 및 소개 부분에 자동으로 들어갈 하이퍼링크 주소입니다.</p>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">차별화 포인트 (USP)</label>
@@ -177,9 +196,10 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     value={payload.brandInfo.differentiation}
                     onChange={(e) => onChange('brandInfo', 'differentiation', e.target.value)}
                     placeholder="독보적인 기능이나 고유 인증 여부"
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 transition-all font-sans"
                     id="input_brand_differentiation"
                   />
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">특허받은 핵심 포뮬러나 시장 내 독점적인 경쟁 우위 기술 등을 기재합니다.</p>
                 </div>
               </div>
 
@@ -191,9 +211,10 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     value={payload.brandInfo.brandImage}
                     onChange={(e) => onChange('brandInfo', 'brandImage', e.target.value)}
                     placeholder="예: 맑고 투명함, 고요한 휴식"
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 transition-all font-sans"
                     id="input_brand_brandImage"
                   />
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">AI 캡션의 감성 표현 및 미드저니 이미지 키워드를 보충하는 핵심 단어입니다.</p>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">경쟁사 및 벤치마킹 채널</label>
@@ -202,27 +223,38 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     value={payload.brandInfo.referenceBrands}
                     onChange={(e) => onChange('brandInfo', 'referenceBrands', e.target.value)}
                     placeholder="예: 이솝(Aesop), 탬버린즈"
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 transition-all font-sans"
                     id="input_brand_referenceBrands"
                   />
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">유사한 비주얼 및 뉘앙스를 가진 벤치마킹 대상 브랜드들을 쉼표로 표기해 주세요.</p>
                 </div>
               </div>
             </div>
 
             {/* Product Details Section */}
-            <div className="space-y-4 pt-4 border-t border-slate-100">
+            <div className="space-y-4 pt-4 border-t border-[var(--border-color)]">
               <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wider font-display">2. 상세 상품 및 서비스 정보</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">제품 공식명 <span className="text-red-500">*</span></label>
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                    제품 공식명 <span className="text-red-500">*</span>
+                  </label>
                   <input
                     type="text"
                     value={payload.productInfo.name}
                     onChange={(e) => onChange('productInfo', 'name', e.target.value)}
                     placeholder="정확한 상품명"
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className={`w-full text-sm border rounded-xl px-3 py-2.5 outline-none transition-all ${
+                      !payload.productInfo.name 
+                        ? 'border-red-300 bg-red-50/5 dark:bg-red-500/5 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                        : 'border-[var(--border-input)] focus:border-pink-500'
+                    }`}
                     id="input_prod_name"
                   />
+                  {!payload.productInfo.name && (
+                    <p className="text-[10px] text-red-550 mt-1 font-sans flex items-center gap-1">⚠️ 필수 입력 항목입니다.</p>
+                  )}
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">소비자에게 직접 표시될 제품의 정확한 판매 공식 명칭입니다.</p>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">제품 카테고리</label>
@@ -231,9 +263,10 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     value={payload.productInfo.category}
                     onChange={(e) => onChange('productInfo', 'category', e.target.value)}
                     placeholder="스킨케어, 앱구독 등"
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 transition-all font-sans"
                     id="input_prod_category"
                   />
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">화장품, 가구, IT 구독 서비스 등 상품 종류를 간단히 명시합니다.</p>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">판매 가격 정보</label>
@@ -242,9 +275,10 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     value={payload.productInfo.price}
                     onChange={(e) => onChange('productInfo', 'price', e.target.value)}
                     placeholder="예: 34,000원"
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 transition-all font-sans"
                     id="input_prod_price"
                   />
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">가격 정보나 특별 런칭 할인 혜택이 있다면 자세히 적어주세요.</p>
                 </div>
               </div>
 
@@ -256,9 +290,10 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     onChange={(e) => onChange('productInfo', 'features', e.target.value)}
                     placeholder="피토-세라마이드 함유 등 특징"
                     rows={2}
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2 outline-none focus:border-pink-500 transition-all font-sans"
                     id="input_prod_features"
                   />
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">제품의 기술적 특장점이나 주요 성분, 제조 공법 등의 팩트를 요약해 주세요.</p>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1 font-display">고객이 얻는 기대 효과 & 장점</label>
@@ -267,9 +302,10 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     onChange={(e) => onChange('productInfo', 'benefits', e.target.value)}
                     placeholder="보습 막 테스트 판정 등"
                     rows={2}
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2 outline-none focus:border-pink-500 transition-all font-sans"
                     id="input_prod_benefits"
                   />
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">고객이 실제 사용하면서 느끼는 구체적인 효능 및 혜택, 실 사용자 만족도를 담아주세요.</p>
                 </div>
               </div>
 
@@ -281,20 +317,22 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     value={payload.productInfo.usage}
                     onChange={(e) => onChange('productInfo', 'usage', e.target.value)}
                     placeholder="예: 아침저녁 크림 단계에서 흡수"
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 transition-all font-sans"
                     id="input_prod_usage"
                   />
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">사용 방법이나 활용 팁을 캡션 본문에 유익한 정보성 가이드로 구성하기 위해 참조합니다.</p>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">제품 메인 및 상세 일러스트 이미지 URL</label>
+                  <label className="block text-xs font-medium text-slate-600 mb-1">제품 메인 및 상세 이미지 URL</label>
                   <input
                     type="text"
                     value={payload.productInfo.imageUrls}
                     onChange={(e) => onChange('productInfo', 'imageUrls', e.target.value)}
                     placeholder="https://..."
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-mono"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 transition-all font-mono"
                     id="input_prod_imageUrls"
                   />
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">모바일 인스타그램 목업 프리뷰에서 피드 사진 자리에 로딩할 실제 기기 이미지 주소입니다.</p>
                 </div>
               </div>
 
@@ -306,9 +344,10 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     value={payload.productInfo.cautions}
                     onChange={(e) => onChange('productInfo', 'cautions', e.target.value)}
                     placeholder="피부 자극성 보관 등 유의점"
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 transition-all font-sans"
                     id="input_prod_cautions"
                   />
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">보관 시의 주의 사항이나 민감 반응 여부 등 법적 의무 표기 사항이나 기재 원칙을 둡니다.</p>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">금지 및 과장 방지 가이드</label>
@@ -317,9 +356,10 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     value={payload.productInfo.prohibitedClaims}
                     onChange={(e) => onChange('productInfo', 'prohibitedClaims', e.target.value)}
                     placeholder="피부병 완치 등 기만적 수식 배격"
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 transition-all font-sans"
                     id="input_prod_prohibited"
                   />
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">식약처/방송통신심의 등에서 단속하는 민감 표현이나 타사 비방성 표현들을 명시합니다.</p>
                 </div>
               </div>
             </div>
@@ -390,15 +430,25 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">콘텐츠 상세 주제 기획안 및 키워드 <span className="text-red-500">*</span></label>
+              <label className="block text-xs font-medium text-slate-600 mb-1">
+                콘텐츠 상세 주제 기획안 및 키워드 <span className="text-red-500">*</span>
+              </label>
               <textarea
                 value={payload.contentStrategy.topic}
                 onChange={(e) => onChange('contentStrategy', 'topic', e.target.value)}
                 placeholder="어성초를 이용해 피부 진정을 도모하는 피부 장벽 관리 루틴 등..."
                 rows={2}
-                className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                className={`w-full text-sm border rounded-xl px-3 py-2 outline-none transition-all ${
+                  !payload.contentStrategy.topic 
+                    ? 'border-red-300 bg-red-50/5 dark:bg-red-500/5 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                    : 'border-[var(--border-input)] focus:border-pink-500'
+                }`}
                 id="input_topic"
               />
+              {!payload.contentStrategy.topic && (
+                <p className="text-[10px] text-red-550 mt-1 font-sans flex items-center gap-1">⚠️ 필수 입력 항목입니다.</p>
+              )}
+              <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">이번 인스타그램 피드 포스팅에서 다루고자 하는 가장 구체적인 핵심 소재 및 스토리 아이디어를 입력하세요.</p>
             </div>
 
             {/* Target customer card */}
@@ -835,9 +885,9 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
         {/* TAB 5: COMPLIANCE & PUBLISHING */}
         {activeTab === 'compliance' && (
           <div className="space-y-6" id="form_tab_compliance">
-            <div className="border-b border-slate-100 pb-3">
-              <h3 className="text-lg font-bold text-slate-800 font-display">🛡️ 심의 가이드라인 및 게시 사양</h3>
-              <p className="text-xs text-slate-400">민감한 의료/법적 위반 방지 필터링과 실제 채널 유통 스케줄러를 구축합니다.</p>
+            <div className="border-b border-[var(--border-color)] pb-3">
+              <h3 className="text-lg font-bold text-[var(--text-primary)] font-display">🛡️ 심의 가이드라인 및 게시 사양</h3>
+              <p className="text-xs text-[var(--text-secondary)]">민감한 의료/법적 위반 방지 필터링과 실제 채널 유통 스케줄러를 구축합니다.</p>
             </div>
 
             {/* Compliance criteria with icons */}
@@ -865,10 +915,10 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                       key={item.key}
                       type="button"
                       onClick={() => onChange('complianceRule', item.key, !check)}
-                      className={`flex items-start space-x-3 p-3 rounded-xl border text-[11px] text-left transition-all ${
+                      className={`flex items-start space-x-3 p-3 rounded-xl border text-[11px] text-left transition-all cursor-pointer ${
                         check 
                           ? 'border-emerald-500 bg-emerald-50/20 text-emerald-900 font-medium' 
-                          : 'border-slate-200 text-slate-500 hover:bg-slate-50'
+                          : 'border-[var(--border-input)] text-slate-500 hover:bg-slate-50'
                       }`}
                     >
                       <CheckSquare className={`w-4 h-4 shrink-0 mt-0.5 ${check ? 'text-emerald-600' : 'text-slate-300'}`} />
@@ -885,14 +935,122 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                   value={payload.complianceRule.additionalNotes}
                   onChange={(e) => onChange('complianceRule', 'additionalNotes', e.target.value)}
                   placeholder="예: 공정위 대가 표시 필수 문구를 맨 마지막 줄에 인쇄"
-                  className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 text-sans"
+                  className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 text-sans"
                 />
               </div>
             </div>
 
-            {/* Publishing options */}
-            <div className="space-y-4 pt-4 border-t border-slate-100">
-              <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wider font-display">2. 실제 배포 및 예약 사양</h4>
+            {/* Mode-specific configurations */}
+            <div className="space-y-4 pt-4 border-t border-[var(--border-color)]">
+              {mode === 'gemini' ? (
+                <div>
+                  <h4 className="text-xs font-semibold text-pink-500 uppercase tracking-wider font-display flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-pink-500" />
+                    Direct Gemini AI 실시간 콘텐츠 생성 파라미터
+                  </h4>
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">
+                    로컬 AI 브레인이 인스타그램 캡션 및 카드뉴스를 구성하는 알고리즘 조건을 지정합니다.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-3">
+                    <div>
+                      <label className="block text-xs font-medium text-slate-600 mb-1">인공지능 모델 선택 (GenAI Model)</label>
+                      <select
+                        className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 bg-[var(--bg-input)] outline-none focus:border-pink-500 transition-all font-sans"
+                        defaultValue="gemini-3.5-flash"
+                      >
+                        <option value="gemini-3.5-flash">Gemini 3.5 Flash (고속 효율 생성)</option>
+                        <option value="gemini-3.5-pro">Gemini 3.5 Pro (최대 지능 스토리텔러)</option>
+                      </select>
+                      <p className="text-[9px] text-[var(--text-muted)] mt-1">기본 대본 작성에 최적화된 3.5 Flash 모델이 제공됩니다.</p>
+                    </div>
+                    
+                    <div>
+                      <div className="flex justify-between items-center mb-1">
+                        <label className="block text-xs font-medium text-slate-600">작성 창의성 온도 (Temperature)</label>
+                        <span className="text-xs font-bold text-indigo-650 font-mono">0.7</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0.1"
+                        max="1.0"
+                        step="0.1"
+                        defaultValue="0.7"
+                        className="w-full accent-indigo-600 h-1.5 bg-[var(--bg-sidebar)] rounded-full cursor-pointer mt-3"
+                      />
+                      <p className="text-[9px] text-[var(--text-muted)] mt-1.5">온도가 높을수록 더 은유적이고 다채로운 카피라이팅을 시도합니다.</p>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-slate-600 mb-1">답변 지연 복원도 (Fallbacks)</label>
+                      <select
+                        className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 bg-[var(--bg-input)] outline-none focus:border-pink-500 transition-all font-sans"
+                        defaultValue="enable"
+                      >
+                        <option value="enable">안전성 백업 가동 (자동 복구)</option>
+                        <option value="disable">Strict Error Mode (디버깅 특화)</option>
+                      </select>
+                      <p className="text-[9px] text-[var(--text-muted)] mt-1">API 연결 장애 시 스태프 예비 디자인을 동적으로 매핑합니다.</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <h4 className="text-xs font-semibold text-teal-600 uppercase tracking-wider font-display flex items-center gap-1.5">
+                    <Globe className="w-4 h-4 text-teal-500" />
+                    n8n Webhook 연동 및 흐름 제어 사양
+                  </h4>
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">
+                    데이터가 n8n 노드로 안전하게 주입될 때 동반할 시스템 메타 식별 정보와 전송 방식을 정의합니다.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-3">
+                    <div>
+                      <label className="block text-xs font-medium text-slate-600 mb-1">웹혹 발행 액션 식별 키 (Action Key)</label>
+                      <input
+                        type="text"
+                        defaultValue="TF-AI-GEN-ACTION-KEY-009"
+                        className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 font-mono"
+                      />
+                      <p className="text-[9px] text-[var(--text-muted)] mt-1">n8n Switch 노드에서 각 워크플로우를 분기할 고유 ID입니다.</p>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-medium text-slate-600 mb-1">데이터 전송 포맷 (Payload Type)</label>
+                      <select
+                        className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 bg-[var(--bg-input)] outline-none focus:border-pink-500 transition-all font-sans"
+                        defaultValue="structured"
+                      >
+                        <option value="structured">Structured Nested JSON (다차원 계층 구조)</option>
+                        <option value="flattened">Flattened Key-Value (간이 테이블 구조)</option>
+                      </select>
+                      <p className="text-[9px] text-[var(--text-muted)] mt-1">n8n JSON Parser 노드의 규격에 최적화하여 송신합니다.</p>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-slate-600 mb-1">CORS 보안 및 인증 (Authorization)</label>
+                      <select
+                        className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 bg-[var(--bg-input)] outline-none focus:border-pink-500 transition-all font-sans"
+                        defaultValue="bearer"
+                      >
+                        <option value="bearer">Bearer Token (환경 변수 암호화 검증)</option>
+                        <option value="none">인증 우회 (개발용 로컬 테스트)</option>
+                      </select>
+                      <p className="text-[9px] text-[var(--text-muted)] mt-1">Express 프록시를 통해 웹 브라우저 CORS 차단을 제어합니다.</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Standard actual publishing scheduler */}
+            <div className="space-y-4 pt-4 border-t border-[var(--border-color)]">
+              <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wider font-display">
+                {mode === 'gemini' ? '3. 로컬 발행 스케줄 및 시뮬레이션 사양' : '3. 원격 SNS 발행 파이프라인 예약 사양'}
+              </h4>
+              <p className="text-[10px] text-[var(--text-muted)] font-sans">
+                인스타그램 실제 퍼블리싱 계정 및 자동 스케줄링 예약을 관리합니다.
+              </p>
               
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
@@ -902,8 +1060,9 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     value={payload.publishSetting.instagramAccount}
                     onChange={(e) => onChange('publishSetting', 'instagramAccount', e.target.value)}
                     placeholder="natureglow_official"
-                    className="w-full text-sm border border-slate-100 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 font-mono"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 font-mono"
                   />
+                  <p className="text-[9px] text-[var(--text-muted)] mt-1">대상이 될 인스타그램 비즈니스 API 연동 계정 핸들러명입니다.</p>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">예약 발간 일정 날짜</label>
@@ -911,8 +1070,9 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     type="date"
                     value={payload.publishSetting.publishDate}
                     onChange={(e) => onChange('publishSetting', 'publishDate', e.target.value)}
-                    className="w-full text-sm border border-slate-100 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 font-sans"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 font-sans"
                   />
+                  <p className="text-[9px] text-[var(--text-muted)] mt-1">피드 카드가 실 서비스에 최종 포스팅될 날짜입니다.</p>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">예약 발간 일정 시각</label>
@@ -920,8 +1080,9 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     type="time"
                     value={payload.publishSetting.publishTime}
                     onChange={(e) => onChange('publishSetting', 'publishTime', e.target.value)}
-                    className="w-full text-sm border border-slate-100 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500 font-sans"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500 font-sans"
                   />
+                  <p className="text-[9px] text-[var(--text-muted)] mt-1">해당 국가 시간 기준 예약 발행 발송 고정 타임입니다.</p>
                 </div>
               </div>
 
@@ -933,8 +1094,9 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     value={payload.publishSetting.postFormat}
                     onChange={(e) => onChange('publishSetting', 'postFormat', e.target.value)}
                     placeholder="예: 캐러셀, 피드카드"
-                    className="w-full text-sm border border-slate-100 rounded-xl px-3 py-2.5 outline-none"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500"
                   />
+                  <p className="text-[9px] text-[var(--text-muted)] mt-1">게시될 콘텐츠 포맷 종류를 지정합니다.</p>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">목표 이미지 슬라이드 장수</label>
@@ -944,25 +1106,27 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                     max="10"
                     value={payload.publishSetting.imageCount}
                     onChange={(e) => onChange('publishSetting', 'imageCount', parseInt(e.target.value) || 1)}
-                    className="w-full text-sm border border-slate-100 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 outline-none focus:border-pink-500"
                   />
+                  <p className="text-[9px] text-[var(--text-muted)] mt-1">AI가 생성할 카드뉴스 시안의 최대 장수(1~10장) 한계치입니다.</p>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">발행 방식 결정</label>
                   <select
                     value={payload.publishSetting.publishMode}
                     onChange={(e) => onChange('publishSetting', 'publishMode', e.target.value as 'auto' | 'manual')}
-                    className="w-full text-sm border border-slate-100 rounded-xl px-3 py-2.5 bg-white outline-none focus:border-indigo-500 font-sans"
+                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2.5 bg-[var(--bg-input)] outline-none focus:border-pink-500 font-sans"
                   >
                     <option value="manual">동시 수동 업로드 (대기 요청 / manual)</option>
                     <option value="auto">n8n 연계형 자동 포스팅 (auto)</option>
                   </select>
+                  <p className="text-[9px] text-[var(--text-muted)] mt-1">API 트리거 성공 시 즉시 배포할지, 관리자 대기 상태로 둘지 결정합니다.</p>
                 </div>
               </div>
 
               {/* Toggles */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50/50">
+                <div className="flex items-center justify-between p-3 rounded-xl border border-[var(--border-color)] bg-slate-50/50">
                   <span className="text-[11px] font-semibold text-slate-600">예약 발행 예약 활성</span>
                   <button 
                     type="button"
@@ -973,7 +1137,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50/50">
+                <div className="flex items-center justify-between p-3 rounded-xl border border-[var(--border-color)] bg-slate-50/50">
                   <span className="text-[11px] font-semibold text-slate-600">캡션 최종 게재 포함</span>
                   <button 
                     type="button"
@@ -984,7 +1148,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50/50">
+                <div className="flex items-center justify-between p-3 rounded-xl border border-[var(--border-color)] bg-slate-50/50">
                   <span className="text-[11px] font-semibold text-slate-600 font-display">최종 관리자 컨펌 승인제</span>
                   <button 
                     type="button"
@@ -995,7 +1159,6 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab }:
                   </button>
                 </div>
               </div>
-
             </div>
           </div>
         )}

@@ -132,6 +132,26 @@
 
 ---
 
+## 🌐 배포 및 원격 서비스 연동 (Deployment & Webhook Integration)
+
+본 플랫폼은 최신 번들러 구조를 갖춘 **정적 React SPA(Single Page Application)** 환경으로 설계되었습니다. GitHub 저장소와 연동하여 Netlify 또는 Vercel 등을 통해 정적 배포를 손쉽게 수행하고, 외부 n8n 오케스트레이션 서버와 실시간 통신을 연동할 수 있습니다.
+
+### 1. GitHub 저장 및 Netlify 빌드 설정
+Netlify에 배포 환경을 연결할 때 아래의 사양을 준수하여 설정을 완료해 주세요.
+* **Build Command (빌드 명령어):** `npm run build`
+* **Publish Directory (배포 디렉토리):** `dist`
+* **환경 변수 설정 (Optional Secrets):** Netlify 설정 대시보드의 `Environment variables` 메뉴에서 `GEMINI_API_KEY`를 시스템 환경 변수로 등록하시면, 빌드 및 API 구동 환경에서 바로 감지하여 작동합니다.
+
+### 2. n8n 웹훅 연동 및 CORS 정책 제어 가이드
+브라우저 클라이언트가 직접 n8n 외부 웹훅을 다이렉트로 호출할 때 발생할 수 있는 **CORS 보호 정책** 에러를 해결하기 위해, 본 프로젝트 백엔드(`server.ts`)에는 `/api/generate` Express 통신 대행 프록시 엔드포인트가 사전에 구축되어 있습니다.
+* 외부 n8n 워크플로우를 호출할 때는 프론트엔드가 이 프록시 엔드포인트를 거쳐 n8n으로 JSON 데이터를 전달합니다.
+* n8n 워크플로우 내에서 클라이언트로 정상 응답을 반환할 때, Response Header에 아래와 같이 와일드카드 CORS 허용 헤더를 추가해 두면 통신이 한층 더 원활하고 신속하게 이루어집니다:
+  ```http
+  Access-Control-Allow-Origin: *
+  ```
+
+---
+
 ## 📌 스타일링 & 코딩 준수 사항 (Best Practices)
 * **아이콘 프레임**: 아이콘의 추가 및 교환 시에는 시스템 지침에 따라 다른 라이브러리 혼용 없이 오직 `lucide-react`에서만 엘리먼트를 명확히 임포트하여 사용해야 컴파일 과정의 깨짐을 배제할 수 있습니다.
 * **컴포넌트 분할 준수**: `App.tsx` 내에 다량의 부작용 렌더 스크립트를 계속 채워 넣기보다는, 단위 뷰 블록이 늘어날 시 `/src/components` 파일군으로 즉석에서 분리하여 Token limits 충돌 현상을 사전에 억제해 주세요.
