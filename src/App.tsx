@@ -810,30 +810,34 @@ export default function App() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">프리셋 이모지</label>
-                  <div className="flex items-center gap-3.5">
-                    <input
-                      type="text"
-                      value={newPresetEmoji}
-                      onChange={(e) => setNewPresetEmoji(e.target.value)}
-                      maxLength={2}
-                      className="w-16 flex-shrink-0 text-center text-lg border border-[var(--border-input)] rounded-xl py-2.5 bg-[var(--bg-input)] text-[var(--text-primary)] outline-none transition-all hover:border-pink-500/40 focus:border-pink-500 focus:ring-4 focus:ring-pink-500/10 font-sans"
-                    />
-                    <div className="flex-1 min-w-0 flex items-center gap-2 overflow-x-auto py-1.5 pl-1 pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                      {["✨", "🌱", "🐶", "🧴", "☕", "💡", "🚀", "🍕", "👔", "🌿"].map((emo) => (
-                        <button
-                          key={emo}
-                          type="button"
-                          onClick={() => setNewPresetEmoji(emo)}
-                          className={`text-sm p-2 rounded-xl border transition-all cursor-pointer hover:scale-110 active:scale-95 ${
-                            newPresetEmoji === emo 
-                              ? 'border-pink-500 bg-gradient-to-tr from-pink-500/10 to-violet-500/10 text-pink-500 scale-105 shadow-sm' 
-                              : 'border-[var(--border-color)] bg-[var(--bg-sidebar)] text-[var(--text-secondary)] hover:bg-[var(--bg-card)]'
-                          }`}
-                        >
-                          {emo}
-                        </button>
-                      ))}
+                  <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5 flex items-center gap-1">프리셋 이모지</label>
+                  <div className="flex items-center gap-4">
+                    {/* 영롱하게 빛나는 대표 선택된 이모지 디스플레이 배지 (Read-Only) */}
+                    <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center text-2xl border-2 border-pink-500 bg-gradient-to-tr from-pink-500/15 via-purple-500/5 to-transparent rounded-xl shadow-md shadow-pink-500/10 relative overflow-hidden select-none">
+                      <span className="relative z-10 animate-pulse">{newPresetEmoji}</span>
+                      <div className="absolute inset-0 bg-white/5 opacity-40"></div>
+                    </div>
+
+                    {/* 우측 페이드 마스크를 적용한 추천 이모지 가로 슬라이더 */}
+                    <div className="flex-1 min-w-0 relative">
+                      <div className="flex items-center gap-2.5 overflow-x-auto py-2 pl-1 pr-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                        {["✨", "🌱", "🐶", "🧴", "☕", "💡", "🚀", "🍕", "👔", "🌿", "🧁", "🎧", "🛹", "👜"].map((emo) => (
+                          <button
+                            key={emo}
+                            type="button"
+                            onClick={() => setNewPresetEmoji(emo)}
+                            className={`text-sm p-2 rounded-xl border transition-all cursor-pointer hover:scale-110 active:scale-95 flex-shrink-0 ${
+                              newPresetEmoji === emo 
+                                ? 'border-pink-500 bg-gradient-to-tr from-pink-500/15 to-violet-500/15 text-pink-500 scale-105 shadow-sm font-bold' 
+                                : 'border-[var(--border-color)] bg-[var(--bg-sidebar)] text-[var(--text-secondary)] hover:bg-[var(--bg-card)]'
+                            }`}
+                          >
+                            {emo}
+                          </button>
+                        ))}
+                      </div>
+                      {/* 우측 끝 부드러운 페이드 가림막 (짤려 보이는 현상 보정 및 스크롤 유도) */}
+                      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[var(--bg-card)] via-[var(--bg-card)]/50 to-transparent pointer-events-none z-10" />
                     </div>
                   </div>
                 </div>
