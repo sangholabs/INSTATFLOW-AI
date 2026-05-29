@@ -97,21 +97,29 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
       steps[4] = true;
     }
     
-    // Fine-grained 7 key fields tracking for real-time keystroke responsiveness
-    const fields = [
-      !!payload.brandInfo?.brandName?.trim(),
-      !!payload.brandInfo?.brandDescription?.trim(),
-      !!payload.productInfo?.name?.trim(),
-      !!payload.contentStrategy?.topic?.trim(),
-      !!(payload.toneAndManner?.tone && payload.toneAndManner.tone.length > 0),
-      !!(payload.hashtagRule?.brandHashtags?.trim() || payload.hashtagRule?.productHashtags?.trim()),
-      !!payload.publishSetting?.instagramAccount?.trim()
-    ];
+    // Top progress bar: calculates completion rate of ONLY the currently active tab!
+    let currentStepRate = 0;
+    if (activeTab === 'brand') {
+      const f1 = !!payload.brandInfo?.brandName?.trim();
+      const f2 = !!payload.brandInfo?.brandDescription?.trim();
+      const f3 = !!payload.productInfo?.name?.trim();
+      const count = (f1 ? 1 : 0) + (f2 ? 1 : 0) + (f3 ? 1 : 0);
+      currentStepRate = Math.round((count / 3) * 100);
+    } else if (activeTab === 'strategy') {
+      const f1 = !!payload.contentStrategy?.topic?.trim();
+      currentStepRate = f1 ? 100 : 0;
+    } else if (activeTab === 'creative') {
+      const f1 = !!(payload.toneAndManner?.tone && payload.toneAndManner.tone.length > 0);
+      currentStepRate = f1 ? 100 : 0;
+    } else if (activeTab === 'copywriting') {
+      const f1 = !!(payload.hashtagRule?.brandHashtags?.trim() || payload.hashtagRule?.productHashtags?.trim());
+      currentStepRate = f1 ? 100 : 0;
+    } else if (activeTab === 'compliance') {
+      const f1 = !!payload.publishSetting?.instagramAccount?.trim();
+      currentStepRate = f1 ? 100 : 0;
+    }
     
-    const completedFieldsCount = fields.filter(Boolean).length;
-    const rate = Math.round((completedFieldsCount / 7) * 100);
-    
-    return { completionRate: rate, stepStatus: steps };
+    return { completionRate: currentStepRate, stepStatus: steps };
   };
 
   const { completionRate, stepStatus } = calculateProgress();
@@ -160,7 +168,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
           {/* Campaign Completion Progress Card */}
           <div className="p-4 rounded-xl bg-gradient-to-br from-pink-500/5 via-purple-500/5 to-indigo-500/5 border border-pink-500/10 space-y-3">
             <div className="flex items-center justify-between text-xs font-semibold">
-              <span className="text-[var(--text-primary)]">📊 기획안 작성 완성도</span>
+              <span className="text-[var(--text-primary)]">📊 현재 단계 작성 완성도</span>
               <span className="text-pink-500 font-mono font-bold">{completionRate}%</span>
             </div>
             <div className="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
@@ -179,7 +187,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
               ))}
             </div>
             <p className="text-[9px] text-[var(--text-muted)] leading-relaxed">
-              7대 필수 항목들이 기입될 때마다 완성도가 실시간으로 약 14%씩 증가합니다. 100% 도달 시 완벽한 AI 카피라이팅이 보장됩니다!
+              현재 탭의 필수 항목들이 채워지면 위의 바가 100%가 되며, 5대 단계(아래 세그먼트)의 필수 기입이 완료되면 영롱한 보라색 불이 들어옵니다.
             </p>
           </div>
 
