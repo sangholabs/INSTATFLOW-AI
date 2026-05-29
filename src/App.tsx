@@ -187,6 +187,8 @@ export default function App() {
   const handleAddNewEmptyPreset = () => {
     setIsCreatingEmpty(true);
     setNewPresetEmoji("📝");
+    setPayload(INITIAL_PAYLOAD); // 클릭 즉시 입력창 빈값으로 전격 세팅!
+    setActivePresetId(null);     // 활성화 프리셋도 즉각 해제!
     setIsPresetModalOpen(true);
   };
 
@@ -889,14 +891,26 @@ export default function App() {
                   <Sparkles className="w-5 h-5 animate-pulse" />
                 </div>
                 <div>
-                  <h3 className="text-sm sm:text-base font-bold text-[var(--text-primary)] font-display tracking-tight">새 커스텀 프리셋 저장</h3>
-                  <p className="text-[9px] text-[var(--text-muted)] font-mono tracking-widest uppercase">CREATE INSTAFLOW PRESET</p>
+                  <h3 className="text-sm sm:text-base font-bold text-[var(--text-primary)] font-display tracking-tight">
+                    {isCreatingEmpty ? "완전히 새로운 빈 프리셋 추가" : "현재 설정값을 새 프리셋으로 저장"}
+                  </h3>
+                  <p className="text-[9px] text-[var(--text-muted)] font-mono tracking-widest uppercase">
+                    {isCreatingEmpty ? "CREATE BLANK PRESET" : "CREATE INSTAFLOW PRESET"}
+                  </p>
                 </div>
               </div>
 
               {/* Informative description callout */}
               <p className="text-xs text-[var(--text-secondary)] leading-relaxed bg-[var(--bg-sidebar)] p-3 rounded-xl border border-[var(--border-color)] font-sans">
-                💡 <span className="font-semibold text-[var(--text-primary)]">현재 입력하신 모든 정보(5단계 설정 전체)</span>를 커스텀 프리셋으로 보관하여 원클릭으로 즉시 불러올 수 있습니다.
+                {isCreatingEmpty ? (
+                  <>
+                    💡 <span className="font-semibold text-[var(--text-primary)]">처음부터 완전히 새로 기획을 채워나갈 수 있는</span> 깨끗하게 비워진 커스텀 프리셋 카드를 생성합니다.
+                  </>
+                ) : (
+                  <>
+                    💡 <span className="font-semibold text-[var(--text-primary)]">현재 입력하신 모든 정보(5단계 설정 전체)</span>를 고스란히 복제하여 커스텀 프리셋 카드로 저장합니다.
+                  </>
+                )}
               </p>
 
               <div className="space-y-4 pt-1">
