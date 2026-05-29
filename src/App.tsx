@@ -799,15 +799,15 @@ export default function App() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">프리셋 이모지</label>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3.5">
                     <input
                       type="text"
                       value={newPresetEmoji}
                       onChange={(e) => setNewPresetEmoji(e.target.value)}
                       maxLength={2}
-                      className="w-14 text-center text-sm border border-[var(--border-input)] rounded-xl py-3 bg-[var(--bg-input)] text-[var(--text-primary)] outline-none transition-all hover:border-pink-500/40 focus:border-pink-500 focus:ring-4 focus:ring-pink-500/10"
+                      className="w-16 flex-shrink-0 text-center text-lg border border-[var(--border-input)] rounded-xl py-2.5 bg-[var(--bg-input)] text-[var(--text-primary)] outline-none transition-all hover:border-pink-500/40 focus:border-pink-500 focus:ring-4 focus:ring-pink-500/10 font-sans"
                     />
-                    <div className="flex-1 flex items-center gap-1.5 overflow-x-auto py-1.5 scrollbar-thin">
+                    <div className="flex-1 min-w-0 flex items-center gap-2 overflow-x-auto py-1.5 pl-1 pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                       {["✨", "🌱", "🐶", "🧴", "☕", "💡", "🚀", "🍕", "👔", "🌿"].map((emo) => (
                         <button
                           key={emo}
