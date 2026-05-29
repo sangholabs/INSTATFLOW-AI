@@ -211,7 +211,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
 
             {/* Brand Info Section */}
             <div className="space-y-4">
-              <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wider font-display">1. 브랜드 프로필</h4>
+              <h4 className="text-xs font-semibold text-pink-500 dark:text-pink-400 uppercase tracking-wider font-display">1. 브랜드 프로필</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">
@@ -328,7 +328,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
 
             {/* Product Details Section */}
             <div className="space-y-4 pt-4 border-t border-[var(--border-color)]">
-              <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wider font-display">2. 상세 상품 및 서비스 정보</h4>
+              <h4 className="text-xs font-semibold text-pink-500 dark:text-pink-400 uppercase tracking-wider font-display">2. 상세 상품 및 서비스 정보</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">
@@ -471,7 +471,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
 
             {/* Purposes checkboxes */}
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-indigo-600 uppercase tracking-wider font-display">1. 콘텐츠 집행 목적 (다중 선택)</label>
+              <label className="block text-xs font-semibold text-pink-500 dark:text-pink-400 uppercase tracking-wider font-display">1. 콘텐츠 집행 목적 (다중 선택)</label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {purposes.map((p) => {
                   const isChecked = payload.contentStrategy.purpose?.includes(p) || false;
@@ -548,7 +548,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
 
             {/* Target customer card */}
             <div className="space-y-4 pt-4 border-t border-slate-100">
-              <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wider font-display">2. 지향 타깃 독자 (퍼소나) 정보</h4>
+              <h4 className="text-xs font-semibold text-pink-500 dark:text-pink-400 uppercase tracking-wider font-display">2. 지향 타깃 독자 (퍼소나) 정보</h4>
               
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
@@ -653,7 +653,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
 
             {/* Tone selector */}
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-indigo-600 uppercase tracking-wider font-display">1. 톤앤매너 뉘앙스 (다중 선택)</label>
+              <label className="block text-xs font-semibold text-pink-500 dark:text-pink-400 uppercase tracking-wider font-display">1. 톤앤매너 뉘앙스 (다중 선택)</label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {tones.map((t) => {
                   const isChecked = payload.toneAndManner.tone?.includes(t) || false;
@@ -692,7 +692,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
 
             {/* Image direction details */}
             <div className="space-y-4 pt-4 border-t border-slate-100">
-              <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wider font-display">2. 동반 이미지 카드 방향</h4>
+              <h4 className="text-xs font-semibold text-pink-500 dark:text-pink-400 uppercase tracking-wider font-display">2. 동반 이미지 카드 방향</h4>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">사용 예정 이미지 기획안/URL</label>
@@ -875,14 +875,18 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                     key={item.key}
                     type="button"
                     onClick={() => onChange('captionRule', item.key, !checked)}
-                    className={`flex items-center justify-between p-3.5 rounded-xl border text-xs text-left transition-all ${
+                    className={`flex items-center justify-between p-3.5 rounded-xl border text-xs text-left transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer ${
                       checked 
-                        ? 'border-indigo-500 bg-indigo-50/30 text-indigo-900 font-medium' 
-                        : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                        ? 'border-pink-500 bg-pink-50/30 dark:bg-pink-950/10 text-pink-600 dark:text-pink-400 font-semibold shadow-sm shadow-pink-500/5' 
+                        : 'border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-900/50'
                     }`}
                   >
                     <span>{item.label}</span>
-                    <span className={`w-2.5 h-2.5 rounded-full ${checked ? 'bg-indigo-600' : 'bg-slate-300'}`} />
+                    <span className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                      checked 
+                        ? 'bg-gradient-to-tr from-pink-500 to-indigo-500 shadow-md shadow-pink-500/30 scale-110' 
+                        : 'bg-slate-200 dark:bg-zinc-700'
+                    }`} />
                   </button>
                 );
               })}
@@ -890,7 +894,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
 
             {/* Tag details */}
             <div className="space-y-4 pt-4 border-t border-slate-100">
-              <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wider font-display">2. 해시태그 레이아웃</h4>
+              <h4 className="text-xs font-semibold text-pink-500 dark:text-pink-400 uppercase tracking-wider font-display">2. 해시태그 레이아웃</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">고유 브랜드명 해시태그</label>
@@ -951,7 +955,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                 <div className="flex flex-col justify-center">
                   <div className="flex justify-between items-center mb-1">
                     <label className="block text-xs font-medium text-slate-600">추천 해시태그 목표 개수</label>
-                    <span className="text-xs font-bold text-indigo-600 font-mono">{payload.hashtagRule.hashtagCount}개</span>
+                    <span className="text-xs font-bold text-pink-500 dark:text-pink-400 font-mono">{payload.hashtagRule.hashtagCount}개</span>
                   </div>
                   <input
                     type="range"
@@ -959,7 +963,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                     max="30"
                     value={payload.hashtagRule.hashtagCount}
                     onChange={(e) => onChange('hashtagRule', 'hashtagCount', parseInt(e.target.value))}
-                    className="w-full accent-indigo-600 h-1.5 bg-slate-100 rounded-full cursor-pointer "
+                    className="w-full accent-pink-500 h-1.5 bg-slate-100 dark:bg-zinc-800 rounded-full cursor-pointer transition-all hover:bg-slate-200 dark:hover:bg-zinc-700"
                   />
                 </div>
                 <div>
@@ -987,7 +991,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
 
             {/* Compliance criteria with icons */}
             <div className="space-y-3">
-              <label className="block text-xs font-semibold text-indigo-600 uppercase tracking-wider font-display flex items-center gap-1.5">
+              <label className="block text-xs font-semibold text-pink-500 dark:text-pink-400 uppercase tracking-wider font-display flex items-center gap-1.5">
                 <ShieldAlert className="w-4 h-4 text-amber-500" />
                 지켜야 할 핵심 심의 준수 위반 예방 (전체 토글 가능)
               </label>
@@ -1063,7 +1067,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                     <div>
                       <div className="flex justify-between items-center mb-1">
                         <label className="block text-xs font-medium text-slate-600">작성 창의성 온도 (Temperature)</label>
-                        <span className="text-xs font-bold text-indigo-650 font-mono">0.7</span>
+                        <span className="text-xs font-bold text-pink-500 dark:text-pink-400 font-mono">0.7</span>
                       </div>
                       <input
                         type="range"
@@ -1071,7 +1075,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                         max="1.0"
                         step="0.1"
                         defaultValue="0.7"
-                        className="w-full accent-indigo-600 h-1.5 bg-[var(--bg-sidebar)] rounded-full cursor-pointer mt-3"
+                        className="w-full accent-pink-500 h-1.5 bg-slate-100 dark:bg-zinc-800 rounded-full cursor-pointer transition-all hover:bg-slate-200 dark:hover:bg-zinc-700 mt-2"
                       />
                       <p className="text-[9px] text-[var(--text-muted)] mt-1.5">온도가 높을수록 더 은유적이고 다채로운 카피라이팅을 시도합니다.</p>
                     </div>
@@ -1140,7 +1144,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
 
             {/* Standard actual publishing scheduler */}
             <div className="space-y-4 pt-4 border-t border-[var(--border-color)]">
-              <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wider font-display">
+              <h4 className="text-xs font-semibold text-pink-500 dark:text-pink-400 uppercase tracking-wider font-display">
                 {mode === 'gemini' ? '3. 로컬 발행 스케줄 및 시뮬레이션 사양' : '3. 원격 SNS 발행 파이프라인 예약 사양'}
               </h4>
               <p className="text-[10px] text-[var(--text-muted)] font-sans">
