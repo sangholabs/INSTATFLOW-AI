@@ -114,6 +114,25 @@ select {
   transition: all 0.2s ease-in-out;
 }
 
+/* Custom text selection color */
+::selection {
+  background-color: rgba(236, 72, 153, 0.25) !important;
+  color: inherit !important;
+}
+::-moz-selection {
+  background-color: rgba(236, 72, 153, 0.25) !important;
+  color: inherit !important;
+}
+
+input[type="text"]:hover,
+input[type="number"]:hover,
+input[type="date"]:hover,
+input[type="time"]:hover,
+textarea:hover,
+select:hover {
+  border-color: #f472b6 !important; /* Pink-400 */
+}
+
 input[type="text"]:focus,
 input[type="number"]:focus,
 input[type="date"]:focus,

@@ -470,17 +470,17 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                   return (
                     <label 
                       key={p} 
-                      className={`flex items-center space-x-2 p-2.5 rounded-xl border text-xs cursor-pointer select-none transition-all ${
+                      className={`flex items-center space-x-2.5 p-2.5 rounded-xl border text-xs cursor-pointer select-none transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] ${
                         isChecked 
-                          ? 'border-indigo-500 bg-indigo-50/40 text-indigo-900 font-medium' 
-                          : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                          ? 'border-pink-500 bg-pink-50/30 dark:bg-pink-950/10 text-pink-600 dark:text-pink-400 font-semibold shadow-sm shadow-pink-500/5' 
+                          : 'border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-900/50 hover:border-slate-300 dark:hover:border-zinc-700'
                       }`}
                     >
                       <input
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => handlePurposeToggle(p)}
-                        className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                        className="rounded border-slate-300 dark:border-zinc-700 text-pink-500 focus:ring-pink-500/30 w-3.5 h-3.5"
                       />
                       <span>{p}</span>
                     </label>
@@ -652,17 +652,17 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                   return (
                     <label 
                       key={t} 
-                      className={`flex items-center space-x-2 p-2.5 rounded-xl border text-xs cursor-pointer select-none transition-all ${
+                      className={`flex items-center space-x-2.5 p-2.5 rounded-xl border text-xs cursor-pointer select-none transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] ${
                         isChecked 
-                          ? 'border-indigo-500 bg-indigo-50/40 text-indigo-900 font-medium' 
-                          : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                          ? 'border-pink-500 bg-pink-50/30 dark:bg-pink-950/10 text-pink-600 dark:text-pink-400 font-semibold shadow-sm shadow-pink-500/5' 
+                          : 'border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-900/50 hover:border-slate-300 dark:hover:border-zinc-700'
                       }`}
                     >
                       <input
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => handleToneToggle(t)}
-                        className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                        className="rounded border-slate-300 dark:border-zinc-700 text-pink-500 focus:ring-pink-500/30 w-3.5 h-3.5"
                       />
                       <span>{t}</span>
                     </label>
@@ -1002,13 +1002,13 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                       key={item.key}
                       type="button"
                       onClick={() => onChange('complianceRule', item.key, !check)}
-                      className={`flex items-start space-x-3 p-3 rounded-xl border text-[11px] text-left transition-all cursor-pointer ${
+                      className={`flex items-start space-x-3 p-3 rounded-xl border text-[11px] text-left transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] cursor-pointer ${
                         check 
-                          ? 'border-emerald-500 bg-emerald-50/20 text-emerald-900 font-medium' 
-                          : 'border-[var(--border-input)] text-slate-500 hover:bg-slate-50'
+                          ? 'border-emerald-500 bg-emerald-50/20 dark:bg-emerald-950/10 text-emerald-700 dark:text-emerald-400 font-semibold shadow-sm shadow-emerald-500/5' 
+                          : 'border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-900/50 hover:border-slate-300 dark:hover:border-zinc-700'
                       }`}
                     >
-                      <CheckSquare className={`w-4 h-4 shrink-0 mt-0.5 ${check ? 'text-emerald-600' : 'text-slate-300'}`} />
+                      <CheckSquare className={`w-4 h-4 shrink-0 mt-0.5 transition-colors ${check ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-300 dark:text-zinc-700'}`} />
                       <span>{item.label}</span>
                     </button>
                   );
