@@ -756,16 +756,17 @@ export default function App() {
             {/* Custom Close Button */}
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setIsPresetModalOpen(false);
                 setNewPresetLabel("");
                 setNewPresetDesc("");
                 setNewPresetEmoji("✨");
               }}
-              className="absolute top-4 right-4 p-1.5 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-sidebar)] transition-all cursor-pointer active:scale-90 z-10"
+              className="absolute top-4 right-4 p-2.5 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-sidebar)] transition-all cursor-pointer active:scale-95 z-50 flex items-center justify-center"
               aria-label="닫기"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
 
             <div className="space-y-5 relative z-10">
