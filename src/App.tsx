@@ -215,7 +215,7 @@ const EMPTY_PAYLOAD: InstagramContentPayload = {
 };
 
 export default function App() {
-  const [payload, setPayload] = useState<InstagramContentPayload>(INITIAL_PAYLOAD);
+  const [payload, setPayload] = useState<InstagramContentPayload>(EMPTY_PAYLOAD);
   const [mode, setMode] = useState<'n8n' | 'gemini'>('gemini'); // Default to Direct Gemini AI for immediate preview functionality
   const [webhookUrl, setWebhookUrl] = useState<string>("https://n8n.cally.co.kr/webhook-test/9876ac2a-24bd-453d-8398-775f16a18c6d");
   const [activeTab, setActiveTab] = useState<string>("brand");
@@ -381,7 +381,7 @@ export default function App() {
 
   const handleReset = () => {
     if (window.confirm("입력하신 설정값을 초기화하시겠습니까? (이전 정보는 지워집니다)")) {
-      setPayload(INITIAL_PAYLOAD);
+      setPayload(EMPTY_PAYLOAD);
       setActivePresetId(null);
       setResultData(null);
       setEditedResultData(null);
