@@ -114,6 +114,106 @@ const INITIAL_PAYLOAD: InstagramContentPayload = {
   }
 };
 
+const EMPTY_PAYLOAD: InstagramContentPayload = {
+  brandInfo: {
+    brandName: "",
+    brandDescription: "",
+    productOrService: "",
+    links: "",
+    mainCustomer: "",
+    brandImage: "",
+    differentiation: "",
+    referenceBrands: ""
+  },
+  productInfo: {
+    name: "",
+    category: "",
+    features: "",
+    functions: "",
+    benefits: "",
+    usage: "",
+    price: "",
+    purchaseLink: "",
+    cautions: "",
+    prohibitedClaims: "",
+    imageUrls: ""
+  },
+  contentStrategy: {
+    purpose: [],
+    contentType: "단일 이미지 게시물",
+    topic: "",
+    topicType: "직접 입력한 주제"
+  },
+  targetCustomer: {
+    age: "",
+    gender: "",
+    job: "",
+    interests: "",
+    purchaseConcern: "",
+    currentProblem: "",
+    desiredResult: "",
+    viewingSituation: ""
+  },
+  toneAndManner: {
+    tone: [],
+    additionalDirection: ""
+  },
+  imageDirection: {
+    imageSource: "",
+    style: "",
+    backgroundMood: "",
+    includePerson: false,
+    showProduct: false,
+    brandColor: "",
+    prohibitedStyle: "",
+    referenceImage: "",
+    visualType: "실사"
+  },
+  captionRule: {
+    length: "중간 길이",
+    hookStyle: "",
+    useEmoji: true,
+    lineBreakStyle: "",
+    includeHashtags: true,
+    includeCTA: true,
+    mentionBrandName: true,
+    mentionProductName: true,
+    linkGuide: ""
+  },
+  hashtagRule: {
+    brandHashtags: "",
+    productHashtags: "",
+    industryHashtags: "",
+    targetHashtags: "",
+    trendHashtags: "",
+    prohibitedHashtags: "",
+    hashtagCount: 5
+  },
+  complianceRule: {
+    noExaggeration: true,
+    noFalseInfo: true,
+    noMedicalLegalFinancialClaims: true,
+    noCompetitorCriticism: true,
+    noWrongPriceDiscount: true,
+    noOverstatedEffects: true,
+    followBrandPolicy: true,
+    noCopyrightIssue: true,
+    noSensitiveExpression: true,
+    additionalNotes: ""
+  },
+  publishSetting: {
+    instagramAccount: "",
+    publishDate: "",
+    publishTime: "",
+    isScheduled: false,
+    postFormat: "단일 이미지",
+    imageCount: 1,
+    includeCaption: true,
+    requireApproval: false,
+    publishMode: "manual"
+  }
+};
+
 export default function App() {
   const [payload, setPayload] = useState<InstagramContentPayload>(INITIAL_PAYLOAD);
   const [mode, setMode] = useState<'n8n' | 'gemini'>('gemini'); // Default to Direct Gemini AI for immediate preview functionality
@@ -185,11 +285,23 @@ export default function App() {
   };
 
   const handleAddNewEmptyPreset = () => {
-    setIsCreatingEmpty(true);
-    setNewPresetEmoji("📝");
-    setPayload(INITIAL_PAYLOAD); // 클릭 즉시 입력창 빈값으로 전격 세팅!
+    setIsCreatingEmpty(false);
+    setPayload(EMPTY_PAYLOAD); // 클릭 즉시 입력창 완벽한 빈 양식으로 전격 세팅!
     setActivePresetId(null);     // 활성화 프리셋도 즉각 해제!
-    setIsPresetModalOpen(true);
+    setIsPresetModalOpen(false); // 모달은 띄우지 않고 즉시 빈 양식 작성을 바로 지원!
+    setActiveTab("brand");       // 첫 탭으로 이동
+
+    // Quick notification toast
+    const indicator = document.getElementById("preset_indicator_toast");
+    if (indicator) {
+      indicator.innerHTML = `<span>✨ 정갈하게 비워진 새 기획서 양식이 로드되었습니다. 처음부터 자유롭게 작성 후 저장해 보세요!</span>`;
+      indicator.classList.remove("opacity-0");
+      indicator.classList.add("opacity-100");
+      setTimeout(() => {
+        indicator.classList.remove("opacity-100");
+        indicator.classList.add("opacity-0");
+      }, 2000);
+    }
   };
 
   const handleSaveCustomPreset = () => {
@@ -198,9 +310,9 @@ export default function App() {
     const newPreset = {
       id: "custom_" + Date.now(),
       label: newPresetLabel.trim(),
-      description: newPresetDesc.trim() || (isCreatingEmpty ? "새로 작성하는 인스타그램 기획안" : "사용자 맞춤형 기획 설정"),
-      emoji: newPresetEmoji.trim() || (isCreatingEmpty ? "📝" : "✨"),
-      payload: isCreatingEmpty ? { ...INITIAL_PAYLOAD } : { ...payload }
+      description: newPresetDesc.trim() || "사용자 맞춤형 기획 설정",
+      emoji: newPresetEmoji.trim() || "✨",
+      payload: { ...payload }
     };
 
     setPresets(prev => {
@@ -209,10 +321,6 @@ export default function App() {
       return updated;
     });
     setActivePresetId(newPreset.id);
-    if (isCreatingEmpty) {
-      setPayload(INITIAL_PAYLOAD);
-      setActiveTab("brand");
-    }
 
     setIsPresetModalOpen(false);
     setNewPresetLabel("");
@@ -892,25 +1000,17 @@ export default function App() {
                 </div>
                 <div>
                   <h3 className="text-sm sm:text-base font-bold text-[var(--text-primary)] font-display tracking-tight">
-                    {isCreatingEmpty ? "완전히 새로운 빈 프리셋 추가" : "현재 설정값을 새 프리셋으로 저장"}
+                    현재 설정값을 새 프리셋으로 저장
                   </h3>
                   <p className="text-[9px] text-[var(--text-muted)] font-mono tracking-widest uppercase">
-                    {isCreatingEmpty ? "CREATE BLANK PRESET" : "CREATE INSTAFLOW PRESET"}
+                    CREATE CUSTOM PRESET
                   </p>
                 </div>
               </div>
 
               {/* Informative description callout */}
               <p className="text-xs text-[var(--text-secondary)] leading-relaxed bg-[var(--bg-sidebar)] p-3 rounded-xl border border-[var(--border-color)] font-sans">
-                {isCreatingEmpty ? (
-                  <>
-                    💡 <span className="font-semibold text-[var(--text-primary)]">처음부터 완전히 새로 기획을 채워나갈 수 있는</span> 깨끗하게 비워진 커스텀 프리셋 카드를 생성합니다.
-                  </>
-                ) : (
-                  <>
-                    💡 <span className="font-semibold text-[var(--text-primary)]">현재 입력하신 모든 정보(5단계 설정 전체)</span>를 고스란히 복제하여 커스텀 프리셋 카드로 저장합니다.
-                  </>
-                )}
+                💡 <span className="font-semibold text-[var(--text-primary)]">현재 입력하신 모든 정보(5단계 설정 전체)</span>를 고스란히 복제하여 커스텀 프리셋 카드로 저장합니다.
               </p>
 
               <div className="space-y-4 pt-1">
