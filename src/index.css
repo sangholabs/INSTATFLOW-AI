@@ -17,8 +17,9 @@
   --border-color: #E2E8F0;
   --border-input: #CBD5E1;
   --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-muted: #94A3B8;
+  --text-secondary: #334155; /* Slate 700 for distinct label legibility */
+  --text-muted: #57657A;     /* Darker slate for highly readable helpers (contrast 5.2:1) */
+  --text-placeholder: #94A3B8; /* Muted slate for placeholders */
   --input-text: #0F172A;
   --shadow-color: rgba(15, 23, 42, 0.05);
   --preset-card-bg: rgba(241, 245, 249, 0.6);
@@ -35,7 +36,8 @@
   --border-input: rgba(255, 255, 255, 0.1);
   --text-primary: #E0E0E0;
   --text-secondary: #A1A1AA;
-  --text-muted: #71717A;
+  --text-muted: #8E8E93;
+  --text-placeholder: #636366;
   --input-text: #FFFFFF;
   --shadow-color: rgba(0, 0, 0, 0.3);
   --preset-card-bg: rgba(34, 34, 38, 0.6);
@@ -125,16 +127,16 @@ select:focus {
 
 /* Placeholder colors */
 ::-webkit-input-placeholder {
-  color: var(--text-muted) !important;
+  color: var(--text-placeholder) !important;
 }
 :-moz-placeholder {
-  color: var(--text-muted) !important;
+  color: var(--text-placeholder) !important;
 }
 ::-moz-placeholder {
-  color: var(--text-muted) !important;
+  color: var(--text-placeholder) !important;
 }
 :-ms-input-placeholder {
-  color: var(--text-muted) !important;
+  color: var(--text-placeholder) !important;
 }
 
 /* Title text colors */

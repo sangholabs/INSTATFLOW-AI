@@ -70,7 +70,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col md:flex-row md:min-h-[620px]" id="form_section_main">
       {/* Sidebar navigation */}
-      <div className="w-full md:w-64 bg-slate-50/70 border-r border-slate-100 p-4 space-y-1">
+      <div className="w-full md:w-64 bg-slate-50/70 border-r border-slate-100 p-4 space-y-1 md:sticky md:top-[88px] md:self-start">
         <div className="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider font-display">단계별 설정</div>
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -105,7 +105,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
       </div>
 
       {/* Main Form Fields Container */}
-      <div className="flex-1 p-6 md:p-8 overflow-y-auto max-h-[700px]">
+      <div className="flex-1 p-6 md:p-8">
         {/* TAB 1: BRAND & PRODUCT */}
         {activeTab === 'brand' && (
           <div className="space-y-6" id="form_tab_brand">
