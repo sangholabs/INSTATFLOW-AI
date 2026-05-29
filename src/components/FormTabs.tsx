@@ -69,6 +69,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
 
   // Calculate completion progress
   const calculateProgress = () => {
+    // 5-step milestone tracking for tab checkmarks (🟢 icons)
     let steps = [false, false, false, false, false];
     
     // Step 1: Brand & Product (Brand name and Product name)
@@ -96,8 +97,19 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
       steps[4] = true;
     }
     
-    const completedCount = steps.filter(Boolean).length;
-    const rate = Math.round((completedCount / 5) * 100);
+    // Fine-grained 7 key fields tracking for real-time keystroke responsiveness
+    const fields = [
+      !!payload.brandInfo?.brandName?.trim(),
+      !!payload.brandInfo?.brandDescription?.trim(),
+      !!payload.productInfo?.name?.trim(),
+      !!payload.contentStrategy?.topic?.trim(),
+      !!(payload.toneAndManner?.tone && payload.toneAndManner.tone.length > 0),
+      !!(payload.hashtagRule?.brandHashtags?.trim() || payload.hashtagRule?.productHashtags?.trim()),
+      !!payload.publishSetting?.instagramAccount?.trim()
+    ];
+    
+    const completedFieldsCount = fields.filter(Boolean).length;
+    const rate = Math.round((completedFieldsCount / 7) * 100);
     
     return { completionRate: rate, stepStatus: steps };
   };
@@ -167,7 +179,7 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
               ))}
             </div>
             <p className="text-[9px] text-[var(--text-muted)] leading-relaxed">
-              필수 항목들이 기입될 때마다 완성도가 20%씩 증가합니다. 100% 도달 시 완벽한 AI 카피라이팅이 보장됩니다!
+              7대 필수 항목들이 기입될 때마다 완성도가 실시간으로 약 14%씩 증가합니다. 100% 도달 시 완벽한 AI 카피라이팅이 보장됩니다!
             </p>
           </div>
 
