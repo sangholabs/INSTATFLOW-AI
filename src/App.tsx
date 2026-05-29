@@ -11,7 +11,7 @@ import InstagramMockup from './components/InstagramMockup';
 import { 
   Sparkles, RotateCcw, Play, CheckCircle2, AlertTriangle, 
   Settings, Globe, HelpCircle, ArrowRight, Github,
-  Sun, Moon, Laptop, Trash2, PlusCircle
+  Sun, Moon, Laptop, Trash2, PlusCircle, X
 } from 'lucide-react';
 
 const INITIAL_PAYLOAD: InstagramContentPayload = {
@@ -171,17 +171,23 @@ export default function App() {
     }
   };
 
+  const [isPresetModalOpen, setIsPresetModalOpen] = useState<boolean>(false);
+  const [newPresetLabel, setNewPresetLabel] = useState<string>("");
+  const [newPresetDesc, setNewPresetDesc] = useState<string>("");
+  const [newPresetEmoji, setNewPresetEmoji] = useState<string>("✨");
+
   const handleAddPreset = () => {
-    const label = prompt("새 프리셋 이름을 입력해 주세요:");
-    if (!label) return;
-    const description = prompt("프리셋에 대한 간단한 설명을 입력해 주세요:") || "사용자 맞춤형 기획 설정";
-    const emoji = prompt("프리셋에 적용할 이모지를 한 개 입력해 주세요 (예: 💡):") || "✨";
+    setIsPresetModalOpen(true);
+  };
+
+  const handleSaveCustomPreset = () => {
+    if (!newPresetLabel.trim()) return;
     
     const newPreset = {
       id: "custom_" + Date.now(),
-      label,
-      description,
-      emoji,
+      label: newPresetLabel.trim(),
+      description: newPresetDesc.trim() || "사용자 맞춤형 기획 설정",
+      emoji: newPresetEmoji.trim() || "✨",
       payload: { ...payload }
     };
 
@@ -190,7 +196,26 @@ export default function App() {
       localStorage.setItem('instagram_presets', JSON.stringify(updated));
       return updated;
     });
-    alert("현재 입력된 폼 설정값들이 새 프리셋으로 정상 저장되었습니다!");
+
+    setIsPresetModalOpen(false);
+    setNewPresetLabel("");
+    setNewPresetDesc("");
+    setNewPresetEmoji("✨");
+
+    const indicator = document.getElementById("preset_indicator_toast");
+    if (indicator) {
+      const originalHTML = indicator.innerHTML;
+      indicator.innerHTML = `<span>🚀 새 커스텀 프리셋이 성공적으로 저장되었습니다!</span>`;
+      indicator.classList.remove("opacity-0");
+      indicator.classList.add("opacity-100");
+      setTimeout(() => {
+        indicator.classList.remove("opacity-100");
+        indicator.classList.add("opacity-0");
+        setTimeout(() => {
+          indicator.innerHTML = originalHTML;
+        }, 300);
+      }, 2000);
+    }
   };
   
   // Generation & display status
@@ -515,10 +540,11 @@ export default function App() {
               <button
                 type="button"
                 onClick={handleAddPreset}
-                className="bg-indigo-600 hover:bg-indigo-700 border border-indigo-500 text-white px-3.5 py-1.5 rounded-xl font-semibold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-sm w-max"
+                className="relative group overflow-hidden bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer hover:shadow-[0_0_20px_rgba(236,72,153,0.3)] active:scale-95 shadow-md shadow-pink-500/10 w-max"
               >
-                <PlusCircle className="w-4 h-4" />
-                <span>현재 설정을 새 프리셋으로 저장</span>
+                <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                <PlusCircle className="w-4 h-4 transition-transform group-hover:rotate-90 duration-300" />
+                <span className="font-display font-medium">현재 설정을 새 프리셋으로 저장</span>
               </button>
             </div>
             
@@ -707,6 +733,131 @@ export default function App() {
       <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-555 text-xs font-mono border-t border-white/5 pt-4 mt-8">
         © 2026 INSTA AI STUDIO. DESIGNED ECO-FRIENDLY & SUSTAINABLY IN GOOGLE AI STUDIO BENTO GRAPHICS.
       </footer>
+
+      {/* Beautiful Custom Preset Creator Modal */}
+      {isPresetModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md transition-all duration-300 animate-in fade-in">
+          <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl w-full max-w-md p-6 shadow-2xl relative overflow-hidden transform scale-100 transition-all duration-300 animate-in zoom-in-95">
+            {/* Artistic Dreamy Aura Gradients */}
+            <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] rounded-full bg-gradient-to-tr from-pink-500/12 via-purple-500/4 to-transparent blur-3xl pointer-events-none" />
+            <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] rounded-full bg-gradient-to-br from-indigo-500/12 via-blue-500/4 to-transparent blur-3xl pointer-events-none" />
+
+            {/* Custom Close Button */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsPresetModalOpen(false);
+                setNewPresetLabel("");
+                setNewPresetDesc("");
+                setNewPresetEmoji("✨");
+              }}
+              className="absolute top-4 right-4 p-1.5 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-sidebar)] transition-all cursor-pointer active:scale-90 z-10"
+              aria-label="닫기"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="space-y-5 relative z-10">
+              {/* Header section with gradient brand tag */}
+              <div className="flex items-center gap-3 pb-3 border-b border-[var(--border-color)]">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-pink-500/20">
+                  <Sparkles className="w-5 h-5 animate-pulse" />
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold text-[var(--text-primary)] font-display tracking-tight">새 커스텀 프리셋 저장</h3>
+                  <p className="text-[9px] text-[var(--text-muted)] font-mono tracking-widest uppercase">CREATE INSTAFLOW PRESET</p>
+                </div>
+              </div>
+
+              {/* Informative description callout */}
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed bg-[var(--bg-sidebar)] p-3 rounded-xl border border-[var(--border-color)] font-sans">
+                💡 <span className="font-semibold text-[var(--text-primary)]">현재 입력하신 모든 정보(5단계 설정 전체)</span>를 커스텀 프리셋으로 보관하여 원클릭으로 즉시 불러올 수 있습니다.
+              </p>
+
+              <div className="space-y-4 pt-1">
+                <div>
+                  <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5 flex items-center gap-1">
+                    프리셋 이름 <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={newPresetLabel}
+                    onChange={(e) => setNewPresetLabel(e.target.value)}
+                    placeholder="예: 마이 비건 화장품"
+                    className="w-full text-xs border border-[var(--border-input)] rounded-xl px-3.5 py-3 bg-[var(--bg-input)] text-[var(--text-primary)] outline-none transition-all placeholder:text-[var(--text-muted)] hover:border-pink-500/40 focus:border-pink-500 focus:ring-4 focus:ring-pink-500/10"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">프리셋 설명</label>
+                  <input
+                    type="text"
+                    value={newPresetDesc}
+                    onChange={(e) => setNewPresetDesc(e.target.value)}
+                    placeholder="예: 프리미엄 수제 유기농 반려견 간식 피드 기획"
+                    className="w-full text-xs border border-[var(--border-input)] rounded-xl px-3.5 py-3 bg-[var(--bg-input)] text-[var(--text-primary)] outline-none transition-all placeholder:text-[var(--text-muted)] hover:border-pink-500/40 focus:border-pink-500 focus:ring-4 focus:ring-pink-500/10"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">프리셋 이모지</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={newPresetEmoji}
+                      onChange={(e) => setNewPresetEmoji(e.target.value)}
+                      maxLength={2}
+                      className="w-14 text-center text-sm border border-[var(--border-input)] rounded-xl py-3 bg-[var(--bg-input)] text-[var(--text-primary)] outline-none transition-all hover:border-pink-500/40 focus:border-pink-500 focus:ring-4 focus:ring-pink-500/10"
+                    />
+                    <div className="flex-1 flex items-center gap-1.5 overflow-x-auto py-1.5 scrollbar-thin">
+                      {["✨", "🌱", "🐶", "🧴", "☕", "💡", "🚀", "🍕", "👔", "🌿"].map((emo) => (
+                        <button
+                          key={emo}
+                          type="button"
+                          onClick={() => setNewPresetEmoji(emo)}
+                          className={`text-sm p-2 rounded-xl border transition-all cursor-pointer hover:scale-110 active:scale-95 ${
+                            newPresetEmoji === emo 
+                              ? 'border-pink-500 bg-gradient-to-tr from-pink-500/10 to-violet-500/10 text-pink-500 scale-105 shadow-sm' 
+                              : 'border-[var(--border-color)] bg-[var(--bg-sidebar)] text-[var(--text-secondary)] hover:bg-[var(--bg-card)]'
+                          }`}
+                        >
+                          {emo}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons with high micro-interactions */}
+              <div className="flex items-center justify-end space-x-2.5 pt-4 border-t border-[var(--border-color)]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsPresetModalOpen(false);
+                    setNewPresetLabel("");
+                    setNewPresetDesc("");
+                    setNewPresetEmoji("✨");
+                  }}
+                  className="px-4.5 py-2.5 rounded-xl text-xs font-semibold text-[var(--text-secondary)] border border-[var(--border-color)] bg-[var(--bg-sidebar)] hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)] transition-all cursor-pointer active:scale-95"
+                >
+                  취소
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveCustomPreset}
+                  disabled={!newPresetLabel.trim()}
+                  className={`px-5 py-2.5 rounded-xl text-xs font-bold text-white shadow-lg transition-all cursor-pointer ${
+                    newPresetLabel.trim() 
+                      ? 'bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:shadow-[0_4px_15px_rgba(236,72,153,0.35)] hover:brightness-110 active:scale-95' 
+                      : 'bg-slate-700/50 text-slate-400/60 cursor-not-allowed border border-white/5 shadow-none'
+                  }`}
+                >
+                  저장 완료
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
