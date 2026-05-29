@@ -300,10 +300,6 @@ export default function App() {
 
   const handleDeleteActivePreset = () => {
     if (!activePresetId) return;
-    if (!activePresetId.startsWith('custom_')) {
-      alert("기본 시그니처 프리셋은 삭제할 수 없습니다!");
-      return;
-    }
 
     const targetPreset = presets.find(p => p.id === activePresetId);
     const label = targetPreset ? targetPreset.label : "프리셋";
@@ -700,7 +696,7 @@ export default function App() {
               <span>작성 전체 초기화</span>
             </button>
 
-            {activePresetId && activePresetId.startsWith('custom_') && (
+            {activePresetId && (
               <div className="flex items-center gap-2">
                 <button
                   type="button"
