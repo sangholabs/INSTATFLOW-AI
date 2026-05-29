@@ -67,41 +67,113 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
     onChange('toneAndManner', 'tone', updated);
   };
 
+  // Calculate completion progress
+  const calculateProgress = () => {
+    let steps = [false, false, false, false, false];
+    
+    // Step 1: Brand & Product (Brand name and Product name)
+    if (payload.brandInfo?.brandName?.trim() && payload.productInfo?.name?.trim()) {
+      steps[0] = true;
+    }
+    
+    // Step 2: Target & Topic (Topic)
+    if (payload.contentStrategy?.topic?.trim()) {
+      steps[1] = true;
+    }
+    
+    // Step 3: Visual & Tone (Tone selected)
+    if (payload.toneAndManner?.tone && payload.toneAndManner.tone.length > 0) {
+      steps[2] = true;
+    }
+    
+    // Step 4: Text & Hashtag (Brand hashtags or product hashtags)
+    if (payload.hashtagRule?.brandHashtags?.trim() || payload.hashtagRule?.productHashtags?.trim()) {
+      steps[3] = true;
+    }
+    
+    // Step 5: Compliance & Publish (Instagram account or compliance notes)
+    if (payload.publishSetting?.instagramAccount?.trim()) {
+      steps[4] = true;
+    }
+    
+    const completedCount = steps.filter(Boolean).length;
+    const rate = Math.round((completedCount / 5) * 100);
+    
+    return { completionRate: rate, stepStatus: steps };
+  };
+
+  const { completionRate, stepStatus } = calculateProgress();
+
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col md:flex-row md:min-h-[620px]" id="form_section_main">
       {/* Sidebar navigation wrapper that stretches to full height of parent */}
       <div className="w-full md:w-64 bg-slate-50/70 border-r border-slate-100 p-4 shrink-0">
         {/* Sticky container inside the stretched sidebar column */}
-        <div className="space-y-1 md:sticky md:top-[88px]">
-          <div className="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider font-display">단계별 설정</div>
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`w-full text-left p-3 rounded-xl transition-all duration-200 flex items-start space-x-3 group ${
-                  isActive 
-                    ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-100' 
-                    : 'text-slate-600 hover:bg-slate-100'
-                }`}
-                id={`tab_btn_${tab.id}`}
-              >
-                <Icon className={`w-5 h-5 shrink-0 mt-0.5 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'}`} />
-                <div>
-                  <div className="font-medium text-sm leading-none">{tab.label}</div>
-                  <div className={`text-[11px] mt-1 line-clamp-1 ${isActive ? 'text-indigo-100' : 'text-slate-400'}`}>
-                    {tab.desc}
+        <div className="space-y-4 md:sticky md:top-[88px]">
+          <div className="px-3 py-1 text-xs font-semibold text-slate-400 uppercase tracking-wider font-display">단계별 설정</div>
+          <div className="space-y-1">
+            {tabs.map((tab, idx) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              const isStepDone = stepStatus[idx];
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`w-full text-left p-3.5 rounded-xl transition-all duration-300 flex items-start space-x-3.5 group cursor-pointer border-l-4 ${
+                    isActive 
+                      ? 'border-pink-500 bg-gradient-to-r from-pink-500/10 via-purple-500/5 to-transparent text-[var(--text-primary)] shadow-sm' 
+                      : 'border-transparent text-[var(--text-secondary)] hover:bg-black/5 dark:hover:bg-white/5 hover:text-[var(--text-primary)]'
+                  }`}
+                  id={`tab_btn_${tab.id}`}
+                >
+                  <div className="relative shrink-0 mt-0.5">
+                    <Icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${isActive ? 'text-pink-500' : 'text-[var(--text-muted)] group-hover:text-pink-500'}`} />
+                    {isStepDone && (
+                      <div className="absolute -top-1.5 -right-1.5 w-2.5 h-2.5 bg-green-500 border-2 border-[var(--bg-sidebar)] rounded-full shadow-sm animate-pulse" title="완료됨" />
+                    )}
                   </div>
-                </div>
-              </button>
-            );
-          })}
+                  <div className="min-w-0">
+                    <div className={`font-semibold text-sm transition-colors ${isActive ? 'text-pink-500 font-bold' : ''}`}>{tab.label}</div>
+                    <div className={`text-[11px] mt-1 leading-relaxed font-medium break-keep ${isActive ? 'text-[var(--text-secondary)]' : 'text-[var(--text-muted)]'}`}>
+                      {tab.desc}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
 
-          <div className="mt-8 p-3 rounded-xl bg-indigo-50/50 border border-indigo-100 text-[11px] text-indigo-700 space-y-1.5">
+          {/* Campaign Completion Progress Card */}
+          <div className="p-4 rounded-xl bg-gradient-to-br from-pink-500/5 via-purple-500/5 to-indigo-500/5 border border-pink-500/10 space-y-3">
+            <div className="flex items-center justify-between text-xs font-semibold">
+              <span className="text-[var(--text-primary)]">📊 기획안 작성 완성도</span>
+              <span className="text-pink-500 font-mono font-bold">{completionRate}%</span>
+            </div>
+            <div className="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+              <div 
+                className="bg-gradient-to-r from-pink-500 to-indigo-500 h-full rounded-full transition-all duration-500"
+                style={{ width: `${completionRate}%` }}
+              />
+            </div>
+            <div className="grid grid-cols-5 gap-1.5 pt-1">
+              {stepStatus.map((step, idx) => (
+                <div 
+                  key={idx}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${step ? 'bg-gradient-to-tr from-pink-500 to-indigo-500' : 'bg-slate-200 dark:bg-slate-800'}`}
+                  title={`단계 ${idx + 1}: ${step ? '완료' : '미완료'}`}
+                />
+              ))}
+            </div>
+            <p className="text-[9px] text-[var(--text-muted)] leading-relaxed">
+              필수 항목들이 기입될 때마다 완성도가 20%씩 증가합니다. 100% 도달 시 완벽한 AI 카피라이팅이 보장됩니다!
+            </p>
+          </div>
+
+          <div className="p-3 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/10 border border-indigo-100 dark:border-indigo-950/20 text-[10px] text-indigo-750 dark:text-indigo-300 space-y-1">
             <p className="leading-relaxed">
-              왼쪽의 인풋들을 채우다 막히실 때는 **상단의 프리셋 버튼**을 이용하여 전문 브랜드 마크업 데이터를 한 번에 대입해볼 수 있습니다.
+              💡 **상단 프리셋 버튼**을 이용하여 준비된 테마 데이터를 한 번에 편리하게 대입해 볼 수도 있습니다.
             </p>
           </div>
         </div>
