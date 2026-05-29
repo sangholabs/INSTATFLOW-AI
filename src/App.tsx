@@ -899,7 +899,7 @@ export default function App() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5 flex items-center gap-1">프리셋 이모지</label>
+                  <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-2 flex items-center gap-1">프리셋 이모지</label>
                   <div className="flex items-center gap-4">
                     {/* 영롱하게 빛나는 대표 선택된 이모지 디스플레이 배지 (Read-Only) */}
                     <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center text-2xl border-2 border-pink-500 bg-gradient-to-tr from-pink-500/15 via-purple-500/5 to-transparent rounded-xl shadow-md shadow-pink-500/10 relative overflow-hidden select-none">
@@ -907,15 +907,15 @@ export default function App() {
                       <div className="absolute inset-0 bg-white/5 opacity-40"></div>
                     </div>
 
-                    {/* 우측 페이드 마스크를 적용한 추천 이모지 가로 슬라이더 */}
-                    <div className="flex-1 min-w-0 relative">
-                      <div className="flex items-center gap-2.5 overflow-x-auto py-2 pl-1 pr-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                    {/* 우측 7열 2행 격자(Grid) 패턴의 추천 이모지 슬롯 */}
+                    <div className="flex-1 min-w-0">
+                      <div className="grid grid-cols-7 gap-1.5 py-0.5">
                         {["✨", "🌱", "🐶", "🧴", "☕", "💡", "🚀", "🍕", "👔", "🌿", "🧁", "🎧", "🛹", "👜"].map((emo) => (
                           <button
                             key={emo}
                             type="button"
                             onClick={() => setNewPresetEmoji(emo)}
-                            className={`text-sm p-2 rounded-xl border transition-all cursor-pointer hover:scale-110 active:scale-95 flex-shrink-0 ${
+                            className={`text-sm p-2 rounded-xl border transition-all cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center ${
                               newPresetEmoji === emo 
                                 ? 'border-pink-500 bg-gradient-to-tr from-pink-500/15 to-violet-500/15 text-pink-500 scale-105 shadow-sm font-bold' 
                                 : 'border-[var(--border-color)] bg-[var(--bg-sidebar)] text-[var(--text-secondary)] hover:bg-[var(--bg-card)]'
@@ -925,8 +925,6 @@ export default function App() {
                           </button>
                         ))}
                       </div>
-                      {/* 우측 끝 부드러운 페이드 가림막 (짤려 보이는 현상 보정 및 스크롤 유도) */}
-                      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[var(--bg-card)] via-[var(--bg-card)]/50 to-transparent pointer-events-none z-10" />
                     </div>
                   </div>
                 </div>
