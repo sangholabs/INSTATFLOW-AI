@@ -119,6 +119,7 @@ export default function App() {
   const [mode, setMode] = useState<'n8n' | 'gemini'>('gemini'); // Default to Direct Gemini AI for immediate preview functionality
   const [webhookUrl, setWebhookUrl] = useState<string>("https://n8n.cally.co.kr/webhook-test/9876ac2a-24bd-453d-8398-775f16a18c6d");
   const [activeTab, setActiveTab] = useState<string>("brand");
+  const [activePresetId, setActivePresetId] = useState<string | null>(null);
   
   // Theme state
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>(() => {
@@ -196,6 +197,7 @@ export default function App() {
       localStorage.setItem('instagram_presets', JSON.stringify(updated));
       return updated;
     });
+    setActivePresetId(newPreset.id);
 
     setIsPresetModalOpen(false);
     setNewPresetLabel("");
@@ -257,6 +259,7 @@ export default function App() {
   const handleReset = () => {
     if (window.confirm("입력하신 설정값을 초기화하시겠습니까? (이전 정보는 지워집니다)")) {
       setPayload(INITIAL_PAYLOAD);
+      setActivePresetId(null);
       setResultData(null);
       setEditedResultData(null);
       setActiveVersion('original');
@@ -267,14 +270,75 @@ export default function App() {
     }
   };
 
+  const handleUpdatePreset = () => {
+    if (!activePresetId) return;
+    const targetPreset = presets.find(p => p.id === activePresetId);
+    const label = targetPreset ? targetPreset.label : "프리셋";
+
+    setPresets(prev => {
+      const updated = prev.map(p => {
+        if (p.id === activePresetId) {
+          return { ...p, payload: { ...payload } };
+        }
+        return p;
+      });
+      localStorage.setItem('instagram_presets', JSON.stringify(updated));
+      return updated;
+    });
+
+    const indicator = document.getElementById("preset_indicator_toast");
+    if (indicator) {
+      indicator.innerHTML = `<span>✨ [${label}] 프리셋에 현재 수정 내용이 성공적으로 저장되었습니다!</span>`;
+      indicator.classList.remove("opacity-0");
+      indicator.classList.add("opacity-100");
+      setTimeout(() => {
+        indicator.classList.remove("opacity-100");
+        indicator.classList.add("opacity-0");
+      }, 2000);
+    }
+  };
+
+  const handleDeleteActivePreset = () => {
+    if (!activePresetId) return;
+    if (!activePresetId.startsWith('custom_')) {
+      alert("기본 시그니처 프리셋은 삭제할 수 없습니다!");
+      return;
+    }
+
+    const targetPreset = presets.find(p => p.id === activePresetId);
+    const label = targetPreset ? targetPreset.label : "프리셋";
+
+    if (window.confirm(`정말로 [${label}] 프리셋을 영구 삭제하시겠습니까?`)) {
+      setPresets(prev => {
+        const updated = prev.filter(p => p.id !== activePresetId);
+        localStorage.setItem('instagram_presets', JSON.stringify(updated));
+        return updated;
+      });
+      setActivePresetId(null);
+      
+      const indicator = document.getElementById("preset_indicator_toast");
+      if (indicator) {
+        indicator.innerHTML = `<span>🗑️ [${label}] 프리셋이 성공적으로 삭제되었습니다.</span>`;
+        indicator.classList.remove("opacity-0");
+        indicator.classList.add("opacity-100");
+        setTimeout(() => {
+          indicator.classList.remove("opacity-100");
+          indicator.classList.add("opacity-0");
+        }, 2000);
+      }
+    }
+  };
+
   const handleApplyPreset = (preset: any) => {
     setPayload(preset.payload);
+    setActivePresetId(preset.id);
     // Move to first brand tab to let them see
     setActiveTab("brand");
     
     // Quick notification toast alternative
     const indicator = document.getElementById("preset_indicator_toast");
     if (indicator) {
+      indicator.innerHTML = `<span>⚡ [${preset.label}] 프리셋이 로드되었습니다. 자유롭게 기획을 시작하세요!</span>`;
       indicator.classList.remove("opacity-0");
       indicator.classList.add("opacity-100");
       setTimeout(() => {
@@ -559,7 +623,11 @@ export default function App() {
                 <div
                   key={preset.id}
                   onClick={() => handleApplyPreset(preset)}
-                  className="bg-[var(--bg-sidebar)] hover:bg-[var(--bg-card)] border border-[var(--border-color)] p-4 rounded-xl text-left transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer group relative"
+                  className={`p-4 rounded-xl text-left transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer group relative ${
+                    activePresetId === preset.id
+                      ? 'bg-gradient-to-tr from-pink-500/10 to-violet-500/10 border-2 border-pink-500 shadow-md shadow-pink-500/5'
+                      : 'bg-[var(--bg-sidebar)] hover:bg-[var(--bg-card)] border border-[var(--border-color)]'
+                  }`}
                   id={`preset_btn_${preset.id}`}
                 >
                   {preset.id.startsWith('custom_') && (
@@ -621,7 +689,7 @@ export default function App() {
           />
 
           {/* Form Action Controls: Reset vs Generate */}
-          <div className="flex items-center justify-between bg-[#18181B] rounded-2xl p-4 border border-white/5 shadow-xl" id="form_actions_bottom_bar">
+          <div className="flex items-center justify-between bg-[#18181B] rounded-2xl p-4 border border-white/5 shadow-xl gap-2 flex-wrap sm:flex-nowrap" id="form_actions_bottom_bar">
             <button
               type="button"
               onClick={handleReset}
@@ -631,6 +699,27 @@ export default function App() {
               <RotateCcw className="w-4 h-4 text-pink-500" />
               <span>작성 전체 초기화</span>
             </button>
+
+            {activePresetId && activePresetId.startsWith('custom_') && (
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleUpdatePreset}
+                  className="flex items-center space-x-1.5 px-4 py-2.5 rounded-xl border border-pink-500/30 text-xs font-semibold text-pink-400 hover:bg-pink-500/15 active:scale-95 transition-all cursor-pointer bg-pink-500/5 hover:text-pink-300"
+                >
+                  <Sparkles className="w-3.5 h-3.5 animate-pulse text-pink-500" />
+                  <span>현재 프리셋 수정</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteActivePreset}
+                  className="flex items-center space-x-1.5 px-4 py-2.5 rounded-xl border border-red-500/30 text-xs font-semibold text-red-400 hover:bg-red-500/15 active:scale-95 transition-all cursor-pointer bg-red-500/5 hover:text-red-300"
+                >
+                  <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                  <span>프리셋 삭제</span>
+                </button>
+              </div>
+            )}
 
             <button
               type="submit"
