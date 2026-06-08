@@ -59,3 +59,17 @@ npm run build
 npm run start
 ```
 이 하나의 명령어로 React의 컴파일 파일 정적 서빙과 Express API 포트(`3000`) 청취가 동일 자원에서 안전하게 기동됩니다.
+
+---
+
+## 🤖 AI 에이전트 연동 가이드 (For AI Assistants)
+
+이 레포지토리는 **Cursor, Claude Code, Windsurf, Antigravity** 등 다양한 AI 에이전트 환경에서 즉각적으로 최적화된 상태로 작업할 수 있도록 설계되어 있습니다.
+
+AI 개발 도구로 이 프로젝트를 처음 열었다면, 에이전트는 자동으로 `.cursorrules` 또는 `.clinerules` 등을 감지하게 됩니다.
+만약 자동 감지가 되지 않는 환경이라면, AI에게 **"`.ai` 폴더의 문서들을 모두 읽고 프로젝트 규칙을 파악해 줘"** 라고 첫 지시를 내려주세요.
+
+* `.ai/01-architecture-and-stack.md`: 기술 스택 및 포트/서버 구조 지침
+* `.ai/02-ui-ux-guidelines.md`: 엄격한 Tailwind CSS 및 컴포넌트 디자인 규칙
+* `.ai/03-data-schema-and-api.md`: 타입 검증 및 API 통신 규칙
+* `.ai/04-workflow-and-conventions.md`: 코드 작성 시 한국어 주석 필수 등 협업 지침

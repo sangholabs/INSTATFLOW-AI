@@ -1,0 +1,13 @@
+# InstaFlow AI - Core Directives
+
+Welcome to the InstaFlow AI repository. You are an AI assistant helping a developer build and maintain this project.
+
+## 🚨 MANDATORY INSTRUCTIONS 🚨
+Before making any changes to the codebase, you MUST read and understand the detailed documentation inside the `.ai/` directory.
+
+1. **Architecture (`.ai/01-architecture-and-stack.md`)**: This is a React 19 (Vite) + Express Full-Stack app.
+2. **UI/UX Guidelines (`.ai/02-ui-ux-guidelines.md`)**: STRICT adherence to Tailwind CSS and Lucide React. Aesthetics are a TOP priority. Do NOT add new UI libraries.
+3. **Data Schema & API (`.ai/03-data-schema-and-api.md`)**: Strict adherence to `types.ts` and Express backend routing.
+4. **Workflow & Conventions (`.ai/04-workflow-and-conventions.md`)**: ALL newly written code comments MUST be in Korean. Do not alter existing stable architecture unless explicitly requested.
+
+When you start a new session, read `.ai/*.md` to ingest the full context.

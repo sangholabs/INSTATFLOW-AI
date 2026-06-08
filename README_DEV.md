@@ -155,3 +155,18 @@ Netlify에 배포 환경을 연결할 때 아래의 사양을 준수하여 설�
 ## 📌 스타일링 & 코딩 준수 사항 (Best Practices)
 * **아이콘 프레임**: 아이콘의 추가 및 교환 시에는 시스템 지침에 따라 다른 라이브러리 혼용 없이 오직 `lucide-react`에서만 엘리먼트를 명확히 임포트하여 사용해야 컴파일 과정의 깨짐을 배제할 수 있습니다.
 * **컴포넌트 분할 준수**: `App.tsx` 내에 다량의 부작용 렌더 스크립트를 계속 채워 넣기보다는, 단위 뷰 블록이 늘어날 시 `/src/components` 파일군으로 즉석에서 분리하여 Token limits 충돌 현상을 사전에 억제해 주세요.
+
+---
+
+## 🤖 AI 에이전트 연동 가이드 (For AI Assistants)
+
+새로운 PC나 환경에서 코드를 다운로드 받은 후 AI(Codex, Cursor, Claude Code 등)를 연결시켰다면, 레포지토리 루트에 생성된 `.cursorrules`, `.clinerules`, `.claude.md` 파일이 자동으로 에이전트를 초기화시킵니다.
+
+해당 규칙들은 AI가 `.ai/` 디렉토리 하위의 핵심 기술 지침서들을 먼저 읽어들이도록 유도합니다.
+
+* `.ai/01-architecture-and-stack.md`
+* `.ai/02-ui-ux-guidelines.md`
+* `.ai/03-data-schema-and-api.md`
+* `.ai/04-workflow-and-conventions.md`
+
+이를 통해 AI는 기존 작업자가 지정한 **Tailwind 테마 엄수**, **API 구조 유지**, **한국어 주석** 규칙 등을 곧바로 파악하여 프로젝트 무결성을 훼손하지 않고 협업할 수 있습니다.

@@ -72,13 +72,13 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
     // 5-step milestone tracking for tab checkmarks (🟢 icons)
     let steps = [false, false, false, false, false];
     
-    // Step 1: Brand & Product (Brand name and Product name)
-    if (payload.brandInfo?.brandName?.trim() && payload.productInfo?.name?.trim()) {
+    // Step 1: Brand & Product (Brand name, Brand description, Product name, Product features)
+    if (payload.brandInfo?.brandName?.trim() && payload.brandInfo?.brandDescription?.trim() && payload.productInfo?.name?.trim() && payload.productInfo?.features?.trim()) {
       steps[0] = true;
     }
     
-    // Step 2: Target & Topic (Topic)
-    if (payload.contentStrategy?.topic?.trim()) {
+    // Step 2: Target & Topic (Topic and Purpose)
+    if (payload.contentStrategy?.topic?.trim() && payload.contentStrategy?.purpose && payload.contentStrategy.purpose.length > 0) {
       steps[1] = true;
     }
     
@@ -103,11 +103,14 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
       const f1 = !!payload.brandInfo?.brandName?.trim();
       const f2 = !!payload.brandInfo?.brandDescription?.trim();
       const f3 = !!payload.productInfo?.name?.trim();
-      const count = (f1 ? 1 : 0) + (f2 ? 1 : 0) + (f3 ? 1 : 0);
-      currentStepRate = Math.round((count / 3) * 100);
+      const f4 = !!payload.productInfo?.features?.trim();
+      const count = (f1 ? 1 : 0) + (f2 ? 1 : 0) + (f3 ? 1 : 0) + (f4 ? 1 : 0);
+      currentStepRate = Math.round((count / 4) * 100);
     } else if (activeTab === 'strategy') {
       const f1 = !!payload.contentStrategy?.topic?.trim();
-      currentStepRate = f1 ? 100 : 0;
+      const f2 = !!(payload.contentStrategy?.purpose && payload.contentStrategy.purpose.length > 0);
+      const count = (f1 ? 1 : 0) + (f2 ? 1 : 0);
+      currentStepRate = Math.round((count / 2) * 100);
     } else if (activeTab === 'creative') {
       const f1 = !!(payload.toneAndManner?.tone && payload.toneAndManner.tone.length > 0);
       currentStepRate = f1 ? 100 : 0;
@@ -223,9 +226,9 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                     value={payload.brandInfo.brandName}
                     onChange={(e) => onChange('brandInfo', 'brandName', e.target.value)}
                     placeholder="예: 네이처글로우"
-                    className={`w-full text-sm border rounded-xl px-3 py-2.5 outline-none transition-all font-sans ${
+                    className={`w-full text-sm border rounded-xl px-3 py-2.5 outline-none transition-colors font-sans ${
                       !payload.brandInfo.brandName 
-                        ? 'input-invalid' 
+                        ? 'border-red-300 bg-red-50/5 dark:bg-red-500/5 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
                         : 'border-[var(--border-input)] focus:border-pink-500'
                     }`}
                     id="input_brandName"
@@ -257,10 +260,9 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                   value={payload.brandInfo.brandDescription}
                   onChange={(e) => onChange('brandInfo', 'brandDescription', e.target.value)}
                   placeholder="추구하는 주요 환경, 철학, 서비스 내용을 상세히 서술해주세요."
-                  rows={2}
-                  className={`w-full text-sm border rounded-xl px-3 py-2 outline-none transition-all ${
+                  className={`w-full text-sm border rounded-xl px-3 py-3 outline-none transition-colors resize-none min-h-[100px] ${
                     !payload.brandInfo.brandDescription 
-                      ? 'input-invalid' 
+                      ? 'border-red-300 bg-red-50/5 dark:bg-red-500/5 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
                       : 'border-[var(--border-input)] focus:border-pink-500'
                   }`}
                   id="input_brandDescription"
@@ -339,9 +341,9 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                     value={payload.productInfo.name}
                     onChange={(e) => onChange('productInfo', 'name', e.target.value)}
                     placeholder="정확한 상품명"
-                    className={`w-full text-sm border rounded-xl px-3 py-2.5 outline-none transition-all ${
+                    className={`w-full text-sm border rounded-xl px-3 py-2.5 outline-none transition-colors ${
                       !payload.productInfo.name 
-                        ? 'input-invalid' 
+                        ? 'border-red-300 bg-red-50/5 dark:bg-red-500/5 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
                         : 'border-[var(--border-input)] focus:border-pink-500'
                     }`}
                     id="input_prod_name"
@@ -379,15 +381,23 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">제품 특징 및 핵심 기능</label>
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                    제품 특징 및 핵심 기능 <span className="text-red-500">*</span>
+                  </label>
                   <textarea
                     value={payload.productInfo.features}
                     onChange={(e) => onChange('productInfo', 'features', e.target.value)}
                     placeholder="피토-세라마이드 함유 등 특징"
-                    rows={2}
-                    className="w-full text-sm border border-[var(--border-input)] rounded-xl px-3 py-2 outline-none focus:border-pink-500 transition-all font-sans"
+                    className={`w-full text-sm border rounded-xl px-3 py-3 outline-none transition-colors resize-none min-h-[100px] ${
+                      !payload.productInfo.features 
+                        ? 'border-red-300 bg-red-50/5 dark:bg-red-500/5 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                        : 'border-[var(--border-input)] focus:border-pink-500'
+                    }`}
                     id="input_prod_features"
                   />
+                  {!payload.productInfo.features && (
+                    <p className="text-[10px] text-red-550 mt-1 font-sans flex items-center gap-1">⚠️ 필수 입력 항목입니다.</p>
+                  )}
                   <p className="text-[10px] text-[var(--text-muted)] mt-1 font-sans">제품의 기술적 특장점이나 주요 성분, 제조 공법 등의 팩트를 요약해 주세요.</p>
                 </div>
                 <div>
@@ -471,7 +481,14 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
 
             {/* Purposes checkboxes */}
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-pink-500 dark:text-pink-400 uppercase tracking-wider font-display">1. 콘텐츠 집행 목적 (다중 선택)</label>
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-semibold text-pink-500 dark:text-pink-400 uppercase tracking-wider font-display">
+                  1. 콘텐츠 집행 목적 (다중 선택) <span className="text-red-500">*</span>
+                </label>
+                {(!payload.contentStrategy.purpose || payload.contentStrategy.purpose.length === 0) && (
+                  <span className="text-[10px] text-red-550 font-sans flex items-center gap-1">⚠️ 최소 1개 이상 선택해주세요.</span>
+                )}
+              </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {purposes.map((p) => {
                   const isChecked = payload.contentStrategy.purpose?.includes(p) || false;
@@ -532,10 +549,9 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
                 value={payload.contentStrategy.topic}
                 onChange={(e) => onChange('contentStrategy', 'topic', e.target.value)}
                 placeholder="어성초를 이용해 피부 진정을 도모하는 피부 장벽 관리 루틴 등..."
-                rows={2}
-                className={`w-full text-sm border rounded-xl px-3 py-2 outline-none transition-all ${
+                className={`w-full text-sm border rounded-xl px-3 py-3 outline-none transition-colors resize-none min-h-[100px] ${
                   !payload.contentStrategy.topic 
-                    ? 'input-invalid' 
+                    ? 'border-red-300 bg-red-50/5 dark:bg-red-500/5 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
                     : 'border-[var(--border-input)] focus:border-pink-500'
                 }`}
                 id="input_topic"
@@ -653,7 +669,14 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
 
             {/* Tone selector */}
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-pink-500 dark:text-pink-400 uppercase tracking-wider font-display">1. 톤앤매너 뉘앙스 (다중 선택)</label>
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-semibold text-pink-500 dark:text-pink-400 uppercase tracking-wider font-display">
+                  1. 톤앤매너 뉘앙스 (다중 선택) <span className="text-red-500">*</span>
+                </label>
+                {(!payload.toneAndManner.tone || payload.toneAndManner.tone.length === 0) && (
+                  <span className="text-[10px] text-red-550 font-sans flex items-center gap-1">⚠️ 최소 1개 이상 선택해주세요.</span>
+                )}
+              </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {tones.map((t) => {
                   const isChecked = payload.toneAndManner.tone?.includes(t) || false;
@@ -897,14 +920,23 @@ export default function FormTabs({ payload, onChange, activeTab, setActiveTab, m
               <h4 className="text-xs font-semibold text-pink-500 dark:text-pink-400 uppercase tracking-wider font-display">2. 해시태그 레이아웃</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">고유 브랜드명 해시태그</label>
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                    고유 브랜드명 해시태그 <span className="text-red-500">*</span>
+                  </label>
                   <input
                     type="text"
                     value={payload.hashtagRule.brandHashtags}
                     onChange={(e) => onChange('hashtagRule', 'brandHashtags', e.target.value)}
                     placeholder="#브랜드명"
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500"
+                    className={`w-full text-sm border rounded-xl px-3 py-2.5 outline-none transition-colors font-sans ${
+                      !payload.hashtagRule.brandHashtags 
+                        ? 'border-red-300 bg-red-50/5 dark:bg-red-500/5 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                        : 'border-slate-200 focus:border-indigo-500'
+                    }`}
                   />
+                  {!payload.hashtagRule.brandHashtags && (
+                    <p className="text-[10px] text-red-550 mt-1 font-sans flex items-center gap-1">⚠️ 필수 입력 항목입니다.</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 mb-1">대표 제품/서비스 해시태그</label>
