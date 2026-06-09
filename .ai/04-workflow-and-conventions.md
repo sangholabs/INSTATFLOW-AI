@@ -12,9 +12,10 @@ All AI agents must follow these operational rules when modifying this codebase.
 - Do not introduce Redux, Zustand, or Context API unless the prop drilling becomes demonstrably unmanageable and the user approves.
 - When modifying state, ensure immutable updates are performed correctly.
 
-## 3. Git Commits
+## 3. Git Commits & Pull Requests
 - Use semantic commit messages (e.g., `feat:`, `fix:`, `style:`, `refactor:`).
 - Be descriptive about what changed.
+- **Pull Requests (PR)**: Whenever performing a `git push` to the repository, you MUST always write a PR (Pull Request) description/summary for the user. Summarize the changes, what was fixed, and any next steps so the user can easily open a PR on GitHub.
 
 ## 4. General AI Agent Rules
 - If asked to fix a bug, trace the data flow from `App.tsx` down to the component, and check the backend proxy in `server.ts` before making assumptions.
